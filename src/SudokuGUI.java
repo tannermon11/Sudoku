@@ -1,3 +1,5 @@
+import sun.plugin2.util.ColorUtil;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,9 +12,13 @@ import java.awt.*;
  */
 public class SudokuGUI extends JFrame{
     JFrame frame;
-    JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9;
+    JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, bPanel;
+    JButton play, load, login, register, highscore, manual;
+    JLabel user, timeLabel;
     JTextField[][] textFields;
     JComboBox difficultyBox;
+    int rating, timeBonus, Accuracy, solveAids;
+    int score;// = rating+timeBonus-Accuracy-solveAids;
 
     public SudokuGUI() {
         frame = new JFrame("Sudoku");
@@ -25,12 +31,11 @@ public class SudokuGUI extends JFrame{
         panel7 = new JPanel();
         panel8 = new JPanel();
         panel9 = new JPanel();
+        bPanel = new JPanel();
+        timeLabel = new JLabel("Time: ");
         textFields = new JTextField[Sudoku.GRID_SIZE][Sudoku.GRID_SIZE];
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(9, 9)); //1,2 for method 2
-
-        difficultyBox = new JComboBox(new String[]{ "Easy", "Medium", "Hard" });
-        difficultyBox.setSelectedIndex(1);
+        frame.setLayout(new GridLayout(4, 3));
 
         panel.setLayout(new GridLayout(3, 3));
         panel2.setLayout(new GridLayout(3, 3));
@@ -41,6 +46,8 @@ public class SudokuGUI extends JFrame{
         panel7.setLayout(new GridLayout(3, 3));
         panel8.setLayout(new GridLayout(3, 3));
         panel9.setLayout(new GridLayout(3, 3));
+        bPanel.setLayout(new GridLayout(8,1));
+        //frame.add(timeLabel);
         frame.add(panel);
         frame.add(panel2);
         frame.add(panel3);
@@ -50,24 +57,13 @@ public class SudokuGUI extends JFrame{
         frame.add(panel7);
         frame.add(panel8);
         frame.add(panel9);
-/*        for (int k=0; k<=8; k++) //Method 2
-        {
-            panel2 = new JPanel(new GridLayout(3,3));
-
-            for(int i=0; i<=8; i++){
-                panel2.add(new JTextField(2));
-            }
-            for(int i=0; i<=8; i++){
-                panel.add(panel2);
-            }
-        }*/
+        frame.add(bPanel);
 
 
         for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
                 String position = Integer.toString(x) + "," + Integer.toString(y);
                 textFields[x][y] = new JTextField(position, 2);
-                //frame.add(textFields[x][y]);
                 //Need to add border to 3x3 squares
                 if(x<3 && y<3)
                     panel.add(textFields[x][y]);
@@ -92,13 +88,44 @@ public class SudokuGUI extends JFrame{
 
             }
         }
-        panel.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.red));
-        panel2.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.blue));
-        panel3.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.green));
+        menu(); //Just seeing what it looks like currently - will move later
 
-        //frame.add(panel); //Method 2
+        panel.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel2.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel3.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel4.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel5.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel6.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel7.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel8.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+        panel9.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.black));
+
         frame.setVisible(true);
-        frame.setSize(300, 300);
+        frame.setSize(500, 500);
+    }
+
+    public void menu() {
+        difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
+        difficultyBox.setSelectedIndex(0);
+
+        user = new JLabel("User: ");
+        play = new JButton("Play");
+        load = new JButton("Load");
+        login = new JButton("Login");
+        register = new JButton("Register");
+        highscore = new JButton("Hall of Fame");
+        manual = new JButton("How-To-Play");
+        login.setBackground(Color.ORANGE);
+        register.setBackground(Color.green);
+        highscore.setBackground(new Color(126,237,235));
+        bPanel.add(user);
+        bPanel.add(difficultyBox);
+        bPanel.add(play);
+        bPanel.add(load);
+        bPanel.add(login);
+        bPanel.add(register);
+        bPanel.add(highscore);
+        bPanel.add(manual);
     }
 
     private boolean legalNumber(int n) {
