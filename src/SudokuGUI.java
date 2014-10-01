@@ -1,5 +1,3 @@
-import sun.plugin2.util.ColorUtil;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,8 +10,8 @@ import java.awt.*;
  */
 public class SudokuGUI extends JFrame{
     JFrame frame;
-    JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, bPanel;
-    JButton play, load, login, register, highscore, manual;
+    JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, bPanel, tPanel;
+    JButton play, load, login, register, highscore, manual, hints, pause, end;
     JLabel user, timeLabel;
     JTextField[][] textFields;
     JComboBox difficultyBox;
@@ -32,6 +30,10 @@ public class SudokuGUI extends JFrame{
         panel8 = new JPanel();
         panel9 = new JPanel();
         bPanel = new JPanel();
+        tPanel = new JPanel();
+        hints = new JButton("Hints");
+        pause = new JButton("Pause");
+        end = new JButton("End");
         timeLabel = new JLabel("Time: ");
         textFields = new JTextField[Sudoku.GRID_SIZE][Sudoku.GRID_SIZE];
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,7 +49,8 @@ public class SudokuGUI extends JFrame{
         panel8.setLayout(new GridLayout(3, 3));
         panel9.setLayout(new GridLayout(3, 3));
         bPanel.setLayout(new GridLayout(8,1));
-        //frame.add(timeLabel);
+        tPanel.setLayout(new BorderLayout());
+        tPanel.add(timeLabel, BorderLayout.NORTH);
         frame.add(panel);
         frame.add(panel2);
         frame.add(panel3);
@@ -58,13 +61,13 @@ public class SudokuGUI extends JFrame{
         frame.add(panel8);
         frame.add(panel9);
         frame.add(bPanel);
+        frame.add(tPanel); //Try to add first then messes up grid
 
 
         for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
                 String position = Integer.toString(x) + "," + Integer.toString(y);
                 textFields[x][y] = new JTextField(position, 2);
-                //Need to add border to 3x3 squares
                 if(x<3 && y<3)
                     panel.add(textFields[x][y]);
                 if(x<3 && y>=3 && y<6)
