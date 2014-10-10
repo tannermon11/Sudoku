@@ -1,3 +1,4 @@
+import javax.smartcardio.Card;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,6 +13,7 @@ import java.awt.event.*;
 public class SudokuGUI extends JFrame {
     JFrame frame;
     JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, bPanel, tPanel;
+    Container pane;
     JButton play, load, login, register, highscore, manual, hints, pause, end;
     JLabel user, time;
     JTextField[][] textFields;
@@ -100,7 +102,7 @@ public class SudokuGUI extends JFrame {
                     public boolean verify(JComponent input) {
                         JTextField temp = (JTextField)input;
                         try {
-                            int number = Integer.parseInt(temp.getText());
+                            //int number = Integer.parseInt(temp.getText());
                             if(temp.getText().trim().length() > 1)
                                 JOptionPane.showMessageDialog(null, "Only 1 number is allowed");
                             return (temp.getText().trim().length() == 1);
@@ -190,6 +192,74 @@ public class SudokuGUI extends JFrame {
     public void stopTimer() {
         if(timer != null)
             timer.stop();
+    }
+
+    public class myCardLayout {
+        JPanel cardHolder;
+        JPanel card1, card2, buttonPane;
+        public CardLayout cardLayout = new CardLayout();
+        String tPanel = "Card with testing & 2";
+        String bPanel = "Card with testing3";
+        JButton bShowOne = new JButton(new showOne());
+        JButton bShowTwo = new JButton(new showTwo());
+
+        public void addComponentToPane (Container pane){
+            buttonPane = new JPanel();
+            buttonPane.add(bShowOne);
+            buttonPane.add(bShowTwo);
+
+            card1 = new JPanel();
+            JButton test = new JButton("testing");
+            JButton test2 = new JButton("testing2");
+            card1.add(test);
+            card1.add(test2);
+            card2 = new JPanel();
+            JButton test3 = new JButton("Go Back");
+            card2.add(test3);
+
+            cardHolder = new JPanel(cardLayout);
+            cardHolder.add(card1, tPanel);
+            cardHolder.add(card2, bPanel);
+            pane.add(buttonPane, BorderLayout.PAGE_START);
+            pane.add(cardHolder, BorderLayout.CENTER);
+
+        }
+
+        private class showOne extends AbstractAction {
+            public showOne() { super("Show One"); }
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(cardHolder, tPanel);
+                buttonPane.remove(bShowTwo);
+                buttonPane.revalidate();
+                buttonPane.repaint();
+            }
+        }
+
+        private class showTwo extends AbstractAction {
+            public showTwo() { super("Show Two"); }
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(cardHolder, bPanel);
+                buttonPane.remove(bShowOne);
+                buttonPane.revalidate();
+                buttonPane.repaint();
+            }
+        }
+
+        /*public void itemStateChanged(ItemEvent e) {
+            CardLayout cl = (CardLayout) (cardHolder.getLayout());
+            cl.show(cardHolder, (String) e.getItem());
+        }*/
+
+        public void createAndShowGUI() {
+            JFrame frame = new JFrame();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            myCardLayout myLayout = new myCardLayout();
+            myLayout.addComponentToPane(frame.getContentPane());
+
+            frame.pack();
+            frame.setVisible(true);
+        }
     }
 
 }
