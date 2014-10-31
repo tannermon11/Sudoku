@@ -82,7 +82,8 @@ public class SudokuGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //startTimer(0, 0);
                 Menu.frame.setVisible(true);
-                frame.setVisible(false);//Need to delete with deconstructor?
+                //frame.setVisible(false);//Need to delete with deconstructor?
+                frame.dispose();
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
                 mcl.createAndShowGUI();*/
             }
@@ -123,7 +124,7 @@ public class SudokuGUI extends JFrame {
                         try {
                             //int number = Integer.parseInt(temp.getText());
                             if(temp.getText().trim().length() > 1)
-                                JOptionPane.showMessageDialog(null, "Only 1 number is allowed");
+                                JOptionPane.showMessageDialog(frame, "Only 1 number is allowed","", JOptionPane.WARNING_MESSAGE);
                             return (temp.getText().trim().length() == 1);
                         }
                         catch (NumberFormatException e) { //Not working so using DocumentFilter
