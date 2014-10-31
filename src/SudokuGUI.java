@@ -1,5 +1,9 @@
 import javax.smartcardio.Card;
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -75,6 +79,8 @@ public class SudokuGUI extends JFrame {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
                 String position = Integer.toString(x) + "," + Integer.toString(y);
                 textFields[x][y] = new JTextField(position, 2);
+                ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
+                        new MyDocumentFilter());
                 if (x < 3 && y < 3)
                     panel.add(textFields[x][y]);
                 if (x < 3 && y >= 3 && y < 6)
@@ -107,7 +113,7 @@ public class SudokuGUI extends JFrame {
                                 JOptionPane.showMessageDialog(null, "Only 1 number is allowed");
                             return (temp.getText().trim().length() == 1);
                         }
-                        catch (NumberFormatException e) {
+                        catch (NumberFormatException e) { //Not working so using DocumentFilter
                             JOptionPane.showMessageDialog(null, "Only numbers are allowed");
                         }
                         return false;
@@ -259,6 +265,49 @@ public class SudokuGUI extends JFrame {
 
             frame.pack();
             frame.setVisible(true);
+        }
+    }
+
+    class MyDocumentFilter extends DocumentFilter {
+        @Override
+        public void insertString(DocumentFilter.FilterBypass fp, int offset,
+                                 String string, AttributeSet aset)
+                throws BadLocationException {
+            int len = string.length();
+            boolean isValidInteger = true;
+
+            for (int i = 0; i < len; i++) {
+                if (!Character.isDigit(string.charAt(i))) {
+                    isValidInteger = false;
+                    break;
+                }
+            }
+            if (isValidInteger)
+                super.insertString(fp, offset, string, aset);
+            else
+                Toolkit.getDefaultToolkit().beep();
+        }
+
+        @Override
+        public void replace(DocumentFilter.FilterBypass fp, int offset
+                , int length, String string, AttributeSet aset)
+                throws BadLocationException
+        {
+            int len = string.length();
+            boolean isValidInteger = true;
+
+            for (int i = 0; i < len; i++)
+            {
+                if (!Character.isDigit(string.charAt(i)))
+                {
+                    isValidInteger = false;
+                    break;
+                }
+            }
+            if (isValidInteger)
+                super.replace(fp, offset, length, string, aset);
+            else
+                Toolkit.getDefaultToolkit().beep();
         }
     }
 
