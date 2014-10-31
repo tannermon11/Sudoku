@@ -13,8 +13,10 @@ public class Sudoku {
     //private int[][] grid;
     public final static int GRID_SIZE = 9;
     public static void main(String[] args) {
-        SudokuGUI sg = new SudokuGUI();
-        SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
-        mcl.createAndShowGUI();//new SudokuGUI();
+        Menu menu = new Menu();
+
+        //SudokuGUI sg = new SudokuGUI();
+        //SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
+        //mcl.createAndShowGUI();//new SudokuGUI();
     }
 }

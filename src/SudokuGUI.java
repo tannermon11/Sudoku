@@ -15,7 +15,7 @@ import java.awt.event.*;
  * To change this template use File | Settings | File Templates.
  */
 public class SudokuGUI extends JFrame {
-    JFrame frame;
+    static JFrame frame;
     JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, bPanel, tPanel;
     Container pane;
     JButton play, load, login, register, highscore, manual, hints, pause, end;
@@ -73,7 +73,20 @@ public class SudokuGUI extends JFrame {
         frame.add(panel9);
         frame.add(bPanel);
         frame.add(tPanel); //Try to add first then messes up grid
+        bPanel.add(hints);
+        bPanel.add(pause);
+        bPanel.add(end);
 
+        end.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //startTimer(0, 0);
+                Menu.frame.setVisible(true);
+                frame.setVisible(false);//Need to delete with deconstructor?
+                /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
+                mcl.createAndShowGUI();*/
+            }
+        });
 
         for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
@@ -123,7 +136,7 @@ public class SudokuGUI extends JFrame {
 
             }
         }
-        menu(); //Just seeing what it looks like currently - will move later
+        //Just seeing what it looks like currently - will move later
 
         panel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
         panel2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
@@ -143,38 +156,6 @@ public class SudokuGUI extends JFrame {
         return n >= 1 && n <= 9;
     }
 
-    public void menu() {
-        difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
-        difficultyBox.setSelectedIndex(0);
-
-        user = new JLabel("User: ");
-        play = new JButton("Play");
-        load = new JButton("Load");
-        login = new JButton("Login");
-        register = new JButton("Register");
-        highscore = new JButton("Hall of Fame");
-        manual = new JButton("How-To-Play");
-
-        play.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startTimer(0,0);
-            }
-        });
-
-        login.setBackground(Color.ORANGE);
-        register.setBackground(Color.green);
-        highscore.setBackground(new Color(126, 237, 235));
-        bPanel.add(user);
-        bPanel.add(difficultyBox);
-        bPanel.add(play);
-        bPanel.add(load);
-        bPanel.add(login);
-        bPanel.add(register);
-        bPanel.add(highscore);
-        bPanel.add(manual);
-
-    }
 
     public void startTimer(int minutes, int seconds) {
         if(timer == null) {
@@ -206,12 +187,12 @@ public class SudokuGUI extends JFrame {
         public CardLayout cardLayout = new CardLayout();
         String tPanel = "Card with testing & 2";
         String bPanel = "Card with testing3";
-        JButton bShowOne = new JButton(new showOne());
-        JButton bShowTwo = new JButton(new showTwo());
+        /*JButton bShowOne = new JButton(new showOne());
+        JButton bShowTwo = new JButton(new showTwo());*/
 
-        public void addComponentToPane (Container pane){
+        /*public void addComponentToPane (Container pane){
             buttonPane = new JPanel();
-            buttonPane.add(bShowOne);
+       /*     buttonPane.add(bShowOne);
             buttonPane.add(bShowTwo);
 
             card1 = new JPanel();
@@ -229,10 +210,10 @@ public class SudokuGUI extends JFrame {
             pane.add(buttonPane, BorderLayout.PAGE_START);
             pane.add(cardHolder, BorderLayout.CENTER);
 
-        }
+        }*/
 
-        private class showOne extends AbstractAction {
-            public showOne() { super("Show One"); }
+        /*private class showOne extends AbstractAction {
+            public showOne() { super("Show hugraigeasg"); }
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(cardHolder, tPanel);
                 buttonPane.remove(bShowTwo);
@@ -249,7 +230,7 @@ public class SudokuGUI extends JFrame {
                 buttonPane.revalidate();
                 buttonPane.repaint();
             }
-        }
+        }*/
 
         /*public void itemStateChanged(ItemEvent e) {
             CardLayout cl = (CardLayout) (cardHolder.getLayout());
@@ -260,8 +241,8 @@ public class SudokuGUI extends JFrame {
             JFrame frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            myCardLayout myLayout = new myCardLayout();
-            myLayout.addComponentToPane(frame.getContentPane());
+            //myCardLayout myLayout = new myCardLayout();
+            //myLayout.addComponentToPane(frame.getContentPane());
 
             frame.pack();
             frame.setVisible(true);
