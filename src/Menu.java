@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 public class Menu extends JFrame {
     JPanel bPanel;
     static JFrame frame;
-    JButton play, load, login, register, highscore, manual, hints, pause, end;
+    JButton play, load, login, register, highscore, manual, guest;
     JLabel user, time;
     JComboBox difficultyBox;
     Timer timer = null;
@@ -28,8 +28,6 @@ public class Menu extends JFrame {
         user = new JLabel("User: ");
         play = new JButton("Play");
         load = new JButton("Load");
-        login = new JButton("Login");
-        register = new JButton("Register");
         highscore = new JButton("Hall of Fame");
         manual = new JButton("How-To-Play");
 
@@ -37,22 +35,19 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //startTimer(0, 0);
+                frame.dispose();
                 SudokuGUI sg = new SudokuGUI();
-                frame.setVisible(false);
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
                 mcl.createAndShowGUI();*/
             }
         });
 
-        login.setBackground(Color.ORANGE);
-        register.setBackground(Color.green);
+
         highscore.setBackground(new Color(126, 237, 235));
         bPanel.add(user);
         bPanel.add(difficultyBox);
         bPanel.add(play);
         bPanel.add(load);
-        bPanel.add(login);
-        bPanel.add(register);
         bPanel.add(highscore);
         bPanel.add(manual);
         frame.add(bPanel);

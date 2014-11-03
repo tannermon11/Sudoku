@@ -1,4 +1,3 @@
-import javax.smartcardio.Card;
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -82,7 +81,6 @@ public class SudokuGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //startTimer(0, 0);
                 Menu.frame.setVisible(true);
-                //frame.setVisible(false);//Need to delete with deconstructor?
                 frame.dispose();
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
                 mcl.createAndShowGUI();*/
@@ -92,9 +90,11 @@ public class SudokuGUI extends JFrame {
         for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
                 String position = Integer.toString(x) + "," + Integer.toString(y);
-                textFields[x][y] = new JTextField(position, 2);
+                //textFields[x][y] = new JTextField(position, 2);
+                textFields[x][y] = new JTextField();
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
                         new MyDocumentFilter());
+                textFields[x][y].setHorizontalAlignment(JTextField.CENTER);
                 if (x < 3 && y < 3)
                     panel.add(textFields[x][y]);
                 if (x < 3 && y >= 3 && y < 6)
@@ -292,5 +292,4 @@ public class SudokuGUI extends JFrame {
                 Toolkit.getDefaultToolkit().beep();
         }
     }
-
 }
