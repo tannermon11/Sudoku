@@ -24,6 +24,7 @@ public class Menu extends JFrame {
         bPanel = new JPanel();
         difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
         difficultyBox.setSelectedIndex(0);
+        //System.out.println(difficultyBox.getSelectedIndex());
 
         user = new JLabel("User: ");
         play = new JButton("Play");
@@ -34,7 +35,7 @@ public class Menu extends JFrame {
         play.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //startTimer(0, 0);
+                SudokuGUI.startTimer(0, 0);
                 frame.dispose();
                 SudokuGUI sg = new SudokuGUI();
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
@@ -55,29 +56,5 @@ public class Menu extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(500, 500);
-    }
-
-    public void startTimer(int minutes, int seconds) {
-        if(timer == null) {
-            timer = new Timer(0, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    time.setText("Time: " + String.format("%02d:%02d", minutes_elapsed, seconds_elapsed));
-                    seconds_elapsed++;
-                    if(seconds_elapsed == 60) {
-                        seconds_elapsed = 0;
-                        minutes_elapsed++;
-                    }
-                }
-            });
-            timer.setDelay(1000);
-            timer.setRepeats(true);
-        }
-        timer.start();
-    }
-
-    public void stopTimer() {
-        if(timer != null)
-            timer.stop();
     }
 }

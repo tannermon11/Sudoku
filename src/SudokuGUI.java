@@ -18,13 +18,14 @@ public class SudokuGUI extends JFrame {
     JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, bPanel, tPanel;
     Container pane;
     JButton play, load, login, register, highscore, manual, hints, pause, end;
-    JLabel user, time;
+    static JLabel user;
+    static JLabel time;
     JTextField[][] textFields;
-    JComboBox difficultyBox;
-    Timer timer = null;
+    static Timer timer = null;
     int rating, timeBonus, Accuracy, solveAids;
     int score;// = rating+timeBonus-Accuracy-solveAids;
-    int minutes_elapsed = 0, seconds_elapsed = 0;
+    static int minutes_elapsed = 0, seconds_elapsed = 0;
+    boolean pauseEnabled;
 
     public SudokuGUI() {
         frame = new JFrame("Sudoku");
@@ -76,10 +77,24 @@ public class SudokuGUI extends JFrame {
         bPanel.add(pause);
         bPanel.add(end);
 
+        pause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!pauseEnabled) {
+                    stopTimer();
+                    pauseEnabled = true;
+                }
+                else {
+                    startTimer(minutes_elapsed, seconds_elapsed);
+                    pauseEnabled = false;
+                }
+            }
+        });
+
         end.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //startTimer(0, 0);
+                minutes_elapsed = 0; seconds_elapsed  = 0;
                 Menu.frame.setVisible(true);
                 frame.dispose();
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
@@ -92,6 +107,7 @@ public class SudokuGUI extends JFrame {
                 String position = Integer.toString(x) + "," + Integer.toString(y);
                 //textFields[x][y] = new JTextField(position, 2);
                 textFields[x][y] = new JTextField();
+                //textFields[x][y].setText("\u00B2 :: \u2074");
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
                         new MyDocumentFilter());
                 textFields[x][y].setHorizontalAlignment(JTextField.CENTER);
@@ -158,7 +174,7 @@ public class SudokuGUI extends JFrame {
     }
 
 
-    public void startTimer(int minutes, int seconds) {
+    public static void startTimer(int minutes, int seconds) {
         if(timer == null) {
             timer = new Timer(0, new ActionListener() {
                 @Override
@@ -177,7 +193,7 @@ public class SudokuGUI extends JFrame {
         timer.start();
     }
 
-    public void stopTimer() {
+    public static void stopTimer() {
         if(timer != null)
             timer.stop();
     }
