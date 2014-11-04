@@ -15,9 +15,9 @@ import java.awt.event.*;
  */
 public class SudokuGUI extends JFrame {
     static JFrame frame;
-    JPanel panel, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, bPanel, tPanel;
-    Container pane;
-    JButton play, load, login, register, highscore, manual, hints, pause, end;
+    JPanel[] panel = new JPanel[9];
+    JPanel bPanel, tPanel;
+    JButton highscore, manual, hints, pause, end;
     static JLabel user;
     static JLabel time;
     JTextField[][] textFields;
@@ -29,15 +29,15 @@ public class SudokuGUI extends JFrame {
 
     public SudokuGUI() {
         frame = new JFrame("Sudoku");
-        panel = new JPanel();
-        panel2 = new JPanel();
-        panel3 = new JPanel();
-        panel4 = new JPanel();
-        panel5 = new JPanel();
-        panel6 = new JPanel();
-        panel7 = new JPanel();
-        panel8 = new JPanel();
-        panel9 = new JPanel();
+        panel[0] = new JPanel();
+        panel[1] = new JPanel();
+        panel[2] = new JPanel();
+        panel[3] = new JPanel();
+        panel[4] = new JPanel();
+        panel[5] = new JPanel();
+        panel[6] = new JPanel();
+        panel[7] = new JPanel();
+        panel[8] = new JPanel();
         bPanel = new JPanel();
         tPanel = new JPanel();
         hints = new JButton("Hints");
@@ -49,28 +49,16 @@ public class SudokuGUI extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(4, 3));
 
-        panel.setLayout(new GridLayout(3, 3));
-        panel2.setLayout(new GridLayout(3, 3));
-        panel3.setLayout(new GridLayout(3, 3));
-        panel4.setLayout(new GridLayout(3, 3));
-        panel5.setLayout(new GridLayout(3, 3));
-        panel6.setLayout(new GridLayout(3, 3));
-        panel7.setLayout(new GridLayout(3, 3));
-        panel8.setLayout(new GridLayout(3, 3));
-        panel9.setLayout(new GridLayout(3, 3));
+        for(int i=0; i<panel.length; i++) {
+            panel[i].setLayout(new GridLayout(3, 3));
+        }
         bPanel.setLayout(new GridLayout(8, 1));
         tPanel.setLayout(new BorderLayout());
 
+        for(int i=0; i<panel.length; i++) {
+            frame.add(panel[i]);
+        }
         tPanel.add(time, BorderLayout.NORTH);
-        frame.add(panel);
-        frame.add(panel2);
-        frame.add(panel3);
-        frame.add(panel4);
-        frame.add(panel5);
-        frame.add(panel6);
-        frame.add(panel7);
-        frame.add(panel8);
-        frame.add(panel9);
         frame.add(bPanel);
         frame.add(tPanel); //Try to add first then messes up grid
         bPanel.add(hints);
@@ -80,11 +68,10 @@ public class SudokuGUI extends JFrame {
         pause.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!pauseEnabled) {
+                if (!pauseEnabled) {
                     stopTimer();
                     pauseEnabled = true;
-                }
-                else {
+                } else {
                     startTimer(minutes_elapsed, seconds_elapsed);
                     pauseEnabled = false;
                 }
@@ -112,25 +99,25 @@ public class SudokuGUI extends JFrame {
                         new MyDocumentFilter());
                 textFields[x][y].setHorizontalAlignment(JTextField.CENTER);
                 if (x < 3 && y < 3)
-                    panel.add(textFields[x][y]);
+                    panel[0].add(textFields[x][y]);
                 if (x < 3 && y >= 3 && y < 6)
-                    panel2.add(textFields[x][y]);
+                    panel[1].add(textFields[x][y]);
                 if (x < 3 && y >= 6)
-                    panel3.add(textFields[x][y]);
+                    panel[2].add(textFields[x][y]);
 
                 if (x >= 3 && x < 6 && y < 3)
-                    panel4.add(textFields[x][y]);
+                    panel[3].add(textFields[x][y]);
                 if (x >= 3 && x < 6 && y >= 3 && y < 6)
-                    panel5.add(textFields[x][y]);
+                    panel[4].add(textFields[x][y]);
                 if (x >= 3 && x < 6 && y >= 6)
-                    panel6.add(textFields[x][y]);
+                    panel[5].add(textFields[x][y]);
 
                 if (x >= 6 && y < 3)
-                    panel7.add(textFields[x][y]);
+                    panel[6].add(textFields[x][y]);
                 if (x >= 6 && y >= 3 && y < 6)
-                    panel8.add(textFields[x][y]);
+                    panel[7].add(textFields[x][y]);
                 if (x >= 6 && y >= 6)
-                    panel9.add(textFields[x][y]);
+                    panel[8].add(textFields[x][y]);
 
 
                 InputVerifier fieldVerifier = new InputVerifier() {
@@ -155,15 +142,9 @@ public class SudokuGUI extends JFrame {
         }
         //Just seeing what it looks like currently - will move later
 
-        panel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel3.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel4.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel5.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel6.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel7.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel8.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        panel9.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
+        for(int i=0; i<panel.length; i++) {
+            panel[i].setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
+        }
 
         frame.setVisible(true);
         frame.setSize(500, 500);

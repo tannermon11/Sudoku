@@ -13,8 +13,8 @@ import java.awt.event.ActionListener;
 public class Menu extends JFrame {
     JPanel bPanel;
     static JFrame frame;
-    JButton play, load, login, register, highscore, manual, guest;
-    JLabel user, time;
+    JButton play, load, highscore, manual;
+    JLabel user;
     JComboBox difficultyBox;
     Timer timer = null;
     int minutes_elapsed = 0, seconds_elapsed = 0;
@@ -37,7 +37,7 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 SudokuGUI.startTimer(0, 0);
                 frame.dispose();
-                SudokuGUI sg = new SudokuGUI();
+                new SudokuGUI();
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
                 mcl.createAndShowGUI();*/
             }

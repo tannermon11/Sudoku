@@ -43,7 +43,7 @@ public class SubMenu extends JFrame { //login, register, guest
             @Override
             public void actionPerformed(ActionEvent e) {
                 subFrame.dispose();
-                Menu mn = new Menu();
+                new Menu();
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
                 mcl.createAndShowGUI();*/
             }
@@ -56,20 +56,18 @@ public class SubMenu extends JFrame { //login, register, guest
     public void login() {
         final JFrame login = new JFrame();
         JPanel loginPanel = new JPanel();
-        JButton log = new JButton("Login");
+        JButton loginButton = new JButton("Login");
         JTextField nameInput = new JTextField(7);
         JPasswordField passwordInput = new JPasswordField(7);
         JLabel name = new JLabel("Name: ");
         JLabel pass = new JLabel("Password: ");
         Player.username = name.getText(); //pass.getText();
 
-        log.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 login.dispose();
-                Menu menu = new Menu();
-                /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
-                mcl.createAndShowGUI();*/
+                new Menu();
             }
         });
 
@@ -77,7 +75,7 @@ public class SubMenu extends JFrame { //login, register, guest
         loginPanel.add(nameInput);
         loginPanel.add(pass);
         loginPanel.add(passwordInput);
-        loginPanel.add(log);
+        loginPanel.add(loginButton);
         login.add(loginPanel);
 
         login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
