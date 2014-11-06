@@ -19,31 +19,26 @@ public class SudokuGUI extends JFrame {
     JPanel bPanel, tPanel;
     JButton highscore, manual, hints, pause, end;
     static JLabel user;
-    static JLabel time;
+    static JLabel time, rateLabel;
     JTextField[][] textFields;
     static Timer timer = null;
-    int rating, timeBonus, Accuracy, solveAids;
-    int score;// = rating+timeBonus-Accuracy-solveAids;
+    static int rating, timeBonus, Accuracy, solveAids;
+    static int score;
     static int minutes_elapsed = 0, seconds_elapsed = 0;
     boolean pauseEnabled;
 
     public SudokuGUI() {
         frame = new JFrame("Sudoku");
-        panel[0] = new JPanel();
-        panel[1] = new JPanel();
-        panel[2] = new JPanel();
-        panel[3] = new JPanel();
-        panel[4] = new JPanel();
-        panel[5] = new JPanel();
-        panel[6] = new JPanel();
-        panel[7] = new JPanel();
-        panel[8] = new JPanel();
+        for (int i=0; i<panel.length; i++) {
+            panel[i] = new JPanel();
+        }
         bPanel = new JPanel();
         tPanel = new JPanel();
         hints = new JButton("Hints");
         pause = new JButton("Pause");
         end = new JButton("End");
         time = new JLabel();
+        rateLabel = new JLabel();
         time.setForeground(Color.blue);
         textFields = new JTextField[Sudoku.GRID_SIZE][Sudoku.GRID_SIZE];
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,6 +54,7 @@ public class SudokuGUI extends JFrame {
             frame.add(panel[i]);
         }
         tPanel.add(time, BorderLayout.NORTH);
+        tPanel.add(rateLabel, BorderLayout.SOUTH);
         frame.add(bPanel);
         frame.add(tPanel); //Try to add first then messes up grid
         bPanel.add(hints);
@@ -81,13 +77,31 @@ public class SudokuGUI extends JFrame {
         end.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                setScore();
+                System.out.println("Score in end listener: " + score);
                 minutes_elapsed = 0; seconds_elapsed  = 0;
+                timer.stop();
                 Menu.frame.setVisible(true);
                 frame.dispose();
-                /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
-                mcl.createAndShowGUI();*/
             }
         });
+        String difficulty = Menu.difficultyBox.getSelectedItem().toString();
+        switch (difficulty) {
+            case "Easy":
+                rating = 1;
+                break;
+            case "Medium":
+                rating = 2;
+                break;
+            case "Hard":
+                rating = 3;
+                break;
+            case "Evil":
+                rating = 4;
+                break;
+        }
+        System.out.println(rating);
+
 
         for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
@@ -125,7 +139,6 @@ public class SudokuGUI extends JFrame {
                     public boolean verify(JComponent input) {
                         JTextField temp = (JTextField)input;
                         try {
-                            //int number = Integer.parseInt(temp.getText());
                             if(temp.getText().trim().length() > 1)
                                 JOptionPane.showMessageDialog(frame, "Only 1 number is allowed","", JOptionPane.WARNING_MESSAGE);
                             return (temp.getText().trim().length() == 1);
@@ -140,7 +153,6 @@ public class SudokuGUI extends JFrame {
 
             }
         }
-        //Just seeing what it looks like currently - will move later
 
         for(int i=0; i<panel.length; i++) {
             panel[i].setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
@@ -154,6 +166,10 @@ public class SudokuGUI extends JFrame {
         return n >= 1 && n <= 9;
     }
 
+    public static void setScore() {
+        timeBonus = 3000 - (minutes_elapsed*60 + seconds_elapsed);
+        score = rating+timeBonus-Accuracy-solveAids;
+    }
 
     public static void startTimer(int minutes, int seconds) {
         if(timer == null) {
@@ -161,6 +177,8 @@ public class SudokuGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     time.setText("Time: " + String.format("%02d:%02d", minutes_elapsed, seconds_elapsed));
+                    setScore();
+                    rateLabel.setText("Score: " + String.valueOf(score));
                     seconds_elapsed++;
                     if(seconds_elapsed == 60) {
                         seconds_elapsed = 0;

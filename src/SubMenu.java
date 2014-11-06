@@ -34,8 +34,6 @@ public class SubMenu extends JFrame { //login, register, guest
             public void actionPerformed(ActionEvent e) {
                 subFrame.dispose();
                 login();
-                /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
-                mcl.createAndShowGUI();*/
             }
         });
 

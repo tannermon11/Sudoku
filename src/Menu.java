@@ -15,7 +15,7 @@ public class Menu extends JFrame {
     static JFrame frame;
     JButton play, load, highscore, manual;
     JLabel user;
-    JComboBox difficultyBox;
+    static JComboBox difficultyBox;
     Timer timer = null;
     int minutes_elapsed = 0, seconds_elapsed = 0;
 
@@ -24,7 +24,7 @@ public class Menu extends JFrame {
         bPanel = new JPanel();
         difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
         difficultyBox.setSelectedIndex(0);
-        //System.out.println(difficultyBox.getSelectedIndex());
+
 
         user = new JLabel("User: ");
         play = new JButton("Play");
@@ -32,12 +32,20 @@ public class Menu extends JFrame {
         highscore = new JButton("Hall of Fame");
         manual = new JButton("How-To-Play");
 
+        difficultyBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(difficultyBox.getSelectedItem());
+            }
+        });
+
         play.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SudokuGUI.startTimer(0, 0);
                 frame.dispose();
                 new SudokuGUI();
+                System.out.println("Score play listener: " + String.valueOf(SudokuGUI.score));
                 /*SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
                 mcl.createAndShowGUI();*/
             }
