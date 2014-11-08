@@ -25,7 +25,6 @@ public class Menu extends JFrame {
         difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
         difficultyBox.setSelectedIndex(0);
 
-
         user = new JLabel("User: ");
         play = new JButton("Play");
         load = new JButton("Load");

@@ -17,7 +17,7 @@ public class SudokuGUI extends JFrame {
     static JFrame frame;
     JPanel[] panel = new JPanel[9];
     JPanel bPanel, tPanel;
-    JButton highscore, manual, hints, pause, end;
+    JButton highscore, manual, hints, pause, end, notes;
     static JLabel user;
     static JLabel time, rateLabel;
     JTextField[][] textFields;
@@ -25,7 +25,8 @@ public class SudokuGUI extends JFrame {
     static int rating, timeBonus, Accuracy, solveAids;
     static int score;
     static int minutes_elapsed = 0, seconds_elapsed = 0;
-    boolean pauseEnabled;
+    boolean pauseEnabled, notesEnabled;
+    Font font1, font2;
 
     public SudokuGUI() {
         frame = new JFrame("Sudoku");
@@ -37,6 +38,7 @@ public class SudokuGUI extends JFrame {
         hints = new JButton("Hints");
         pause = new JButton("Pause");
         end = new JButton("End");
+        notes = new JButton("Notes");
         time = new JLabel();
         rateLabel = new JLabel();
         time.setForeground(Color.blue);
@@ -60,6 +62,7 @@ public class SudokuGUI extends JFrame {
         bPanel.add(hints);
         bPanel.add(pause);
         bPanel.add(end);
+        bPanel.add(notes);
 
         pause.addActionListener(new ActionListener() {
             @Override
@@ -83,6 +86,36 @@ public class SudokuGUI extends JFrame {
                 timer.stop();
                 Menu.frame.setVisible(true);
                 frame.dispose();
+            }
+        });
+
+        notes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!notesEnabled) {
+                    notesEnabled = true;
+                    font1 = new Font("SansSerif", Font.BOLD, 10);
+                    for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
+                        for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
+                            if(textFields[x][y] == null)
+                            textFields[x][y].setFont(font1);
+                        }
+                    }
+                    System.out.println(notesEnabled);
+                }
+                else {
+                    notesEnabled = false;
+                    font2 = new Font("SansSerif", Font.PLAIN, 15);
+                    for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
+                        for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
+                            if(textFields[x][y] == null)
+                            textFields[x][y].setFont(font2);
+                            frame.revalidate();
+                            frame.repaint();
+                        }
+                    }
+                    System.out.println(notesEnabled);
+                }
             }
         });
         String difficulty = Menu.difficultyBox.getSelectedItem().toString();
@@ -112,6 +145,7 @@ public class SudokuGUI extends JFrame {
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
                         new MyDocumentFilter());
                 textFields[x][y].setHorizontalAlignment(JTextField.CENTER);
+
                 if (x < 3 && y < 3)
                     panel[0].add(textFields[x][y]);
                 if (x < 3 && y >= 3 && y < 6)
@@ -132,25 +166,6 @@ public class SudokuGUI extends JFrame {
                     panel[7].add(textFields[x][y]);
                 if (x >= 6 && y >= 6)
                     panel[8].add(textFields[x][y]);
-
-
-                InputVerifier fieldVerifier = new InputVerifier() {
-                    @Override
-                    public boolean verify(JComponent input) {
-                        JTextField temp = (JTextField)input;
-                        try {
-                            if(temp.getText().trim().length() > 1)
-                                JOptionPane.showMessageDialog(frame, "Only 1 number is allowed","", JOptionPane.WARNING_MESSAGE);
-                            return (temp.getText().trim().length() == 1);
-                        }
-                        catch (NumberFormatException e) { //Not working so using DocumentFilter
-                            JOptionPane.showMessageDialog(null, "Only numbers are allowed");
-                        }
-                        return false;
-                    }
-                };
-            textFields[x][y].setInputVerifier(fieldVerifier);
-
             }
         }
 
@@ -272,11 +287,19 @@ public class SudokuGUI extends JFrame {
                 throws BadLocationException {
             int len = string.length();
             boolean isValidInteger = true;
-
+            System.out.println(fp.getDocument().getLength());
             for (int i = 0; i < len; i++) {
-                if (!Character.isDigit(string.charAt(i))) {
-                    isValidInteger = false;
-                    break;
+                if(notesEnabled) {
+                    if (!Character.isDigit(string.charAt(i)) || string.contains(String.valueOf(0)) || fp.getDocument().getLength() >= 9) {
+                        isValidInteger = false;
+                        break;
+                    }
+                }
+                else if(!notesEnabled) {
+                    if (!Character.isDigit(string.charAt(i)) || string.contains(String.valueOf(0)) || fp.getDocument().getLength() >= 1) {
+                        isValidInteger = false;
+                        break;
+                    }
                 }
             }
             if (isValidInteger)
@@ -292,19 +315,32 @@ public class SudokuGUI extends JFrame {
         {
             int len = string.length();
             boolean isValidInteger = true;
+            System.out.println(fp.getDocument().getLength());
 
-            for (int i = 0; i < len; i++)
-            {
-                if (!Character.isDigit(string.charAt(i)))
-                {
-                    isValidInteger = false;
-                    break;
+            for (int i = 0; i < len; i++) {
+                if(notesEnabled) {
+                    if (!Character.isDigit(string.charAt(i)) || string.contains(String.valueOf(0)) || fp.getDocument().getLength() >= 9) {
+                        isValidInteger = false;
+                        break;
+                    }
+                }
+                else if(!notesEnabled) {
+                    if (!Character.isDigit(string.charAt(i)) || string.contains(String.valueOf(0)) || fp.getDocument().getLength() >= 1) {
+                        isValidInteger = false;
+                        break;
+                    }
                 }
             }
             if (isValidInteger)
                 super.replace(fp, offset, length, string, aset);
             else
                 Toolkit.getDefaultToolkit().beep();
+        }
+
+        public JTextField getFontEditorField(Font font) {
+            JTextField field = new JTextField();
+            field.setFont(font);
+            return field;
         }
     }
 }

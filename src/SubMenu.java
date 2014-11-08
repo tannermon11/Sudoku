@@ -17,7 +17,8 @@ public class SubMenu extends JFrame { //login, register, guest
         subPanel = new JPanel();
         subFrame = new JFrame();
         /*test = new JTextArea();//Testing jtextarea, might need to switch from jtextfield
-        test.setPreferredSize(new Dimension(50,50));*/
+        test.setPreferredSize(new Dimension(75,50));
+        test.setLineWrap(true);*/
         JButton login = new JButton("Login");
         JButton register = new JButton("Register");
         JButton guest = new JButton("Guest");
@@ -51,19 +52,21 @@ public class SubMenu extends JFrame { //login, register, guest
         subFrame.setVisible(true);
         subFrame.setSize(500, 500);
     }
+
     public void login() {
         final JFrame login = new JFrame();
         JPanel loginPanel = new JPanel();
         JButton loginButton = new JButton("Login");
-        JTextField nameInput = new JTextField(7);
+        final JTextField nameInput = new JTextField(7);
         JPasswordField passwordInput = new JPasswordField(7);
         JLabel name = new JLabel("Name: ");
         JLabel pass = new JLabel("Password: ");
-        Player.username = name.getText(); //pass.getText();
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Player.username = nameInput.getText(); //pass.getText();
+                System.out.print("Username: " + Player.username);
                 login.dispose();
                 new Menu();
             }
