@@ -5,6 +5,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 
 
 /**
@@ -135,12 +136,14 @@ public class SudokuGUI extends JFrame {
         }
         System.out.println(rating);
 
-
+        SudokuImporter si = new SudokuImporter();
         for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
-                String position = Integer.toString(x) + "," + Integer.toString(y);
+                //String position = Integer.toString(x) + "," + Integer.toString(y);
                 //textFields[x][y] = new JTextField(position, 2);
                 textFields[x][y] = new JTextField();
+
+                textFields[x][y].setText(String.valueOf(si.getNumber(y,x)));
                 //textFields[x][y].setText("\u00B2 :: \u2074");
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
                         new MyDocumentFilter());

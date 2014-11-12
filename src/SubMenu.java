@@ -58,15 +58,17 @@ public class SubMenu extends JFrame { //login, register, guest
         JPanel loginPanel = new JPanel();
         JButton loginButton = new JButton("Login");
         final JTextField nameInput = new JTextField(7);
-        JPasswordField passwordInput = new JPasswordField(7);
+        final JPasswordField passwordInput = new JPasswordField(7);
         JLabel name = new JLabel("Name: ");
         JLabel pass = new JLabel("Password: ");
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Player.username = nameInput.getText(); //pass.getText();
-                System.out.print("Username: " + Player.username);
+                Player.username = nameInput.getText();
+                Player.password = passwordInput.getText(); //getPassword()?
+                System.out.println("Username: " + Player.username);
+                System.out.println("Password: " + Player.password);
                 login.dispose();
                 new Menu();
             }
