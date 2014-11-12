@@ -13,6 +13,7 @@ public class SubMenu extends JFrame { //login, register, guest
     JFrame subFrame;
     JPanel subPanel;
     JTextArea test;
+    Player player = new Player();
     public SubMenu() {
         subPanel = new JPanel();
         subFrame = new JFrame();
@@ -65,10 +66,10 @@ public class SubMenu extends JFrame { //login, register, guest
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Player.username = nameInput.getText();
-                Player.password = passwordInput.getText(); //getPassword()?
-                System.out.println("Username: " + Player.username);
-                System.out.println("Password: " + Player.password);
+                player.username = nameInput.getText();
+                player.password = passwordInput.getText(); //getPassword()?
+                System.out.println("Username: " + player.username);
+                System.out.println("Password: " + player.password);
                 login.dispose();
                 new Menu();
             }

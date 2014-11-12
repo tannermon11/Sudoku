@@ -142,7 +142,7 @@ public class SudokuGUI extends JFrame {
                 //String position = Integer.toString(x) + "," + Integer.toString(y);
                 //textFields[x][y] = new JTextField(position, 2);
                 textFields[x][y] = new JTextField();
-
+                if(!String.valueOf(si.getNumber(y,x)).equalsIgnoreCase("0"))
                 textFields[x][y].setText(String.valueOf(si.getNumber(y,x)));
                 //textFields[x][y].setText("\u00B2 :: \u2074");
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(

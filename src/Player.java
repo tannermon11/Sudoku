@@ -5,5 +5,8 @@
  * To change this template use File | Settings | File Templates.
  */
 public class Player {
-    public static String username, password;
+    String username, password;
+    public Player() {
+
+    }
 }
