@@ -6,6 +6,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
+import java.io.FileReader;
 import java.util.*;
 /**
  * User: Tanner
@@ -16,7 +18,7 @@ import java.util.*;
 public class Player
 {
 	String username, password, secretQuestion;
-	try
+	/*try
 	{
 		File userFolder = new File("/UserInformation");
 		FileReader fr = null;
@@ -45,5 +47,5 @@ public class Player
     void CreateUser(String name, String code, String question)
     {
 		if(
-	}
+	}*/
 }
