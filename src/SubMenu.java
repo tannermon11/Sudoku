@@ -70,8 +70,12 @@ public class SubMenu extends JFrame { //login, register, guest
                 player.password = passwordInput.getText(); //getPassword()?
                 System.out.println("Username: " + player.username);
                 System.out.println("Password: " + player.password);
+                //check for correct username and password
+                //if incorrect, prompt to re-enter or register or forget password
+                profile();
                 login.dispose();
-                new Menu();
+                //new Menu();
+
             }
         });
 
@@ -85,5 +89,45 @@ public class SubMenu extends JFrame { //login, register, guest
         login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         login.setVisible(true);
         login.setSize(500, 500);
+    }
+
+    public void profile() {
+        final JFrame profile = new JFrame(player.username + "'s Profile");
+        JPanel statistics, buttons;
+        JLabel statsLabel = new JLabel("Statistics");
+        JLabel games = new JLabel("Games Completed: ");
+        JLabel highscore = new JLabel("Highest score: ");
+        JLabel bestTime = new JLabel("Best time: ");
+        JButton dashboard = new JButton("Go to dashboard");
+        JButton settings = new JButton("Profile settings");
+
+        dashboard.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                profile.dispose();
+                new Menu();
+            }
+        });
+
+        statistics = new JPanel();
+        buttons = new JPanel();
+        statistics.setLayout(new GridLayout(4, 1));
+        buttons.setLayout(null);
+        dashboard.setBounds(50,175,150,40); //x,y,width,height
+        settings.setBounds(50,225,150,40);
+
+        statistics.add(statsLabel);
+        statistics.add(games);
+        statistics.add(highscore);
+        statistics.add(bestTime);
+        buttons.add(dashboard);
+        buttons.add(settings);
+
+        profile.add(statistics);
+        profile.add(buttons);
+        profile.setLayout(new GridLayout(1, 2));
+        profile.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        profile.setVisible(true);
+        profile.setSize(500, 500);
     }
 }

@@ -60,6 +60,16 @@ public class Menu extends JFrame {
 		                mcl.createAndShowGUI();*/
 		            }
         });
+        load.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                frame.dispose();
+                Player player = new Player();
+                player.loadGame();
+            }
+        });
 
         manual.addActionListener(new ActionListener()
         {

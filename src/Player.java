@@ -6,7 +6,16 @@
  */
 public class Player {
     String username, password;
+    //Need to save files, load
     public Player() {
+
+    }
+
+    public void loadGame() {
+
+    }
+
+    public void saveGame() {
 
     }
 }
