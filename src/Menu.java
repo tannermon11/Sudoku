@@ -67,7 +67,7 @@ public class Menu extends JFrame {
             {
                 frame.dispose();
                 Player player = new Player();
-                player.loadGame();
+                //player.loadGame();
             }
         });
 

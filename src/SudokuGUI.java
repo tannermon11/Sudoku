@@ -5,7 +5,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Arrays;
 
 
 /**
@@ -17,7 +16,7 @@ import java.util.Arrays;
 public class SudokuGUI extends JFrame {
     static JFrame frame;
     JPanel[] panel = new JPanel[9];
-    JPanel bPanel, tPanel;
+    JPanel bPanel, tPanel, pausePanel;
     JButton highscore, manual, hints, pause, end, notes;
     static JLabel user;
     static JLabel time, rateLabel;
@@ -36,6 +35,7 @@ public class SudokuGUI extends JFrame {
         }
         bPanel = new JPanel();
         tPanel = new JPanel();
+        pausePanel = new JPanel();
         hints = new JButton("Hints");
         pause = new JButton("Pause");
         end = new JButton("End");
@@ -47,14 +47,14 @@ public class SudokuGUI extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(4, 3));
 
-        for(int i=0; i<panel.length; i++) {
-            panel[i].setLayout(new GridLayout(3, 3));
+        for (JPanel aPanel : panel) {
+            aPanel.setLayout(new GridLayout(3, 3));
         }
         bPanel.setLayout(new GridLayout(8, 1));
         tPanel.setLayout(new BorderLayout());
 
-        for(int i=0; i<panel.length; i++) {
-            frame.add(panel[i]);
+        for (JPanel aPanel : panel) {
+            frame.add(aPanel);
         }
         tPanel.add(time, BorderLayout.NORTH);
         tPanel.add(rateLabel, BorderLayout.SOUTH);
@@ -71,9 +71,15 @@ public class SudokuGUI extends JFrame {
                 if (!pauseEnabled) {
                     stopTimer();
                     pauseEnabled = true;
+                    for (JPanel aPanel : panel)
+                        aPanel.setVisible(false);
+                    pause.setText("Un-pause");
                 } else {
                     startTimer(minutes_elapsed, seconds_elapsed);
                     pauseEnabled = false;
+                    for (JPanel aPanel : panel)
+                        aPanel.setVisible(true);
+                    pause.setText("Pause");
                 }
             }
         });
@@ -142,8 +148,10 @@ public class SudokuGUI extends JFrame {
                 //String position = Integer.toString(x) + "," + Integer.toString(y);
                 //textFields[x][y] = new JTextField(position, 2);
                 textFields[x][y] = new JTextField();
-                if(!String.valueOf(si.getNumber(y,x)).equalsIgnoreCase("0"))
-                textFields[x][y].setText(String.valueOf(si.getNumber(y,x)));
+                if(!String.valueOf(si.getNumber(y,x)).equalsIgnoreCase("0")) {
+                    textFields[x][y].setText(String.valueOf(si.getNumber(y, x)));
+                    textFields[x][y].setEditable(false);
+                }
                 //textFields[x][y].setText("\u00B2 :: \u2074");
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
                         new MyDocumentFilter());
@@ -172,8 +180,8 @@ public class SudokuGUI extends JFrame {
             }
         }
 
-        for(int i=0; i<panel.length; i++) {
-            panel[i].setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
+        for (JPanel aPanel : panel) {
+            aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
         }
 
         frame.setVisible(true);
