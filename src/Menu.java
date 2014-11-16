@@ -32,7 +32,7 @@ public class Menu extends JFrame {
         difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
         difficultyBox.setSelectedIndex(0);
 
-        user = new JLabel("User: ");
+        user = new JLabel("User: " + SubMenu.player.username);
         play = new JButton("Play");
         load = new JButton("Load");
         highscore = new JButton("Hall of Fame");
@@ -66,8 +66,7 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e)
             {
                 frame.dispose();
-                Player player = new Player();
-                //player.loadGame();
+                //SubMenu.player.loadGame();
             }
         });
 

@@ -13,7 +13,7 @@ public class SubMenu extends JFrame { //login, register, guest
     JFrame subFrame;
     JPanel subPanel;
     JTextArea test;
-    Player player = new Player();
+    static Player player = new Player();
     public SubMenu() {
         subPanel = new JPanel();
         subFrame = new JFrame();
@@ -105,6 +105,7 @@ public class SubMenu extends JFrame { //login, register, guest
             @Override
             public void actionPerformed(ActionEvent e) {
                 profile.dispose();
+                System.out.println(player.username);
                 new Menu();
             }
         });
