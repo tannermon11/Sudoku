@@ -13,6 +13,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 
+
 public class Menu extends JFrame {
     JPanel bPanel, mPanel;
     static JFrame frame, mFrame;
