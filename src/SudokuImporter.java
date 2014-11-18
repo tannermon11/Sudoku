@@ -12,12 +12,15 @@ import java.io.IOException;
 public class SudokuImporter {
     static String difficulty = "";
     int[][] grid = new int[9][9];
+    int[][] solutionGrid = new int[9][9];
     int row, column, number;
     public SudokuImporter() {
         File file = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\test.txt");
+        File solution = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\solution.txt");
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(file));
+
             String line;
             while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
                 String[] test = line.split(",");
@@ -32,6 +35,22 @@ public class SudokuImporter {
                         grid[column][row] = number;
                         System.out.println("Row: " + row + " Column: " + column + " Number: " + number +
                                 " Difficulty: " + difficulty);
+
+                    }
+                }
+            }
+            reader = new BufferedReader(new FileReader(solution));
+            while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
+                String[] test = line.split(",");
+                if (line.contains("Difficulty: ")) {
+                    String[] diff = line.split(":");
+                    difficulty = diff[1];
+                } else {
+                    if (line.contains(",")) {
+                        row = Integer.parseInt(test[0]);
+                        column = Integer.parseInt(test[1]);
+                        number = Integer.parseInt(test[2]);
+                        solutionGrid[column][row] = number;
 
                     }
                 }
@@ -61,5 +80,9 @@ public class SudokuImporter {
 
     public int getNumber(int x, int y) {
         return grid[x][y];
+    }
+
+    public String getSolution(int x, int y) {
+        return String.valueOf(solutionGrid[x][y]);
     }
 }

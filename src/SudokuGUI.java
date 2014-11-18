@@ -5,6 +5,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.File;
 
 
 /**
@@ -27,6 +29,7 @@ public class SudokuGUI extends JFrame {
     static int minutes_elapsed = 0, seconds_elapsed = 0;
     boolean pauseEnabled, notesEnabled;
     Font font1, font2;
+    SudokuImporter si = new SudokuImporter();
 
     public SudokuGUI() {
         frame = new JFrame("Sudoku");
@@ -128,21 +131,20 @@ public class SudokuGUI extends JFrame {
         String difficulty = Menu.difficultyBox.getSelectedItem().toString();
         switch (difficulty) {
             case "Easy":
-                rating = 1;
+                rating = 10;
                 break;
             case "Medium":
-                rating = 2;
+                rating = 20;
                 break;
             case "Hard":
-                rating = 3;
+                rating = 30;
                 break;
             case "Evil":
-                rating = 4;
+                rating = 40;
                 break;
         }
         System.out.println(rating);
 
-        SudokuImporter si = new SudokuImporter();
         for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
             for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
                 //String position = Integer.toString(x) + "," + Integer.toString(y);
@@ -154,7 +156,7 @@ public class SudokuGUI extends JFrame {
                 }
                 //textFields[x][y].setText("\u00B2 :: \u2074");
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
-                        new MyDocumentFilter());
+                        new MyDocumentFilter(x, y));
                 textFields[x][y].setHorizontalAlignment(JTextField.CENTER);
 
                 if (x < 3 && y < 3)
@@ -292,6 +294,11 @@ public class SudokuGUI extends JFrame {
     }
 
     class MyDocumentFilter extends DocumentFilter {
+        int x, y;
+        public MyDocumentFilter(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
         @Override
         public void insertString(DocumentFilter.FilterBypass fp, int offset,
                                  String string, AttributeSet aset)
@@ -342,10 +349,21 @@ public class SudokuGUI extends JFrame {
                     }
                 }
             }
-            if (isValidInteger)
+            if (isValidInteger) {
                 super.replace(fp, offset, length, string, aset);
+                checkAccuracy(string, this.x, this.y);
+            }
             else
                 Toolkit.getDefaultToolkit().beep();
+        }
+
+        public void checkAccuracy(String num, int x, int y) {
+            //get x and y of word
+            //then check word
+            //in solution at x,y
+            if(!si.getSolution(x,y).equals(num))
+                Accuracy += 50;
+            System.out.println(x + ":" + y);
         }
 
         public JTextField getFontEditorField(Font font) {
