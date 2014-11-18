@@ -1,5 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
+mport java.io.IOException;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
@@ -24,24 +23,32 @@ public class Player
 
 	public boolean createPlayer(String xml)
 	{
-		List = new ArrayList<String>();
+		ListofPlayers = new ArrayList<String>();
 		Document document;
-		DocumentBuilder
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try
 		{
-			DocumentBuilder db = dbFactory.newDoumentBuilder();
+			DocumentBuilder db = dbFactory.newDocumentBuilder();
 
-			document = db.parse(xml)
-			Element doc = document.getDocumentElement();
+			document = db.parse(xml);
+			Element e = document.getDocumentElement();
 
-			username = getTextValue(username, doc, "username");
+			username = getTextValue(username, e, "username");
 			if (username != null)
 			{
 				if(!username.isEmpty())
-					{username.add(username);}
+					{ListofPlayers.add(username);}
 			}
+            return true;
 		}
+        catch (ParserConfigurationException pce)
+        {System.out.println(pce.getMessage());}
+        catch (SAXException se)
+        {System.out.println(se.getMessage());}
+        catch (IOException ioe)
+        {System.err.println(ioe.getMessage());}
+
+        return false;
 	}
 
 	public void saveUser(String xmlFile)
@@ -52,13 +59,13 @@ public class Player
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try
 		{
-			DocumentBuilder db = dbFactory.newDoumentBuilder();
+			DocumentBuilder db = dbFactory.newDocumentBuilder();
 			document = db.newDocument();
 
 			Element root = document.createElement("User Information");
 
 			element = document.createElement("Username");
-			element.appendChild(dom.createElement(username));
+			element.appendChild(document.createElement(username));
 			root.appendChild(element);
 
 
@@ -72,7 +79,7 @@ public class Player
 				tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
 				tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-				tr.transform(new DOMSource(document)), new StreamResults(new FileOutputStream(xmlFile)));
+                tr.transform(new DOMSource(document),new StreamResult(new FileOutputStream(xmlFile)));
 			}
 			catch(TransformerException te)
 			{
