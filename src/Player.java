@@ -1,123 +1,174 @@
-mport java.io.IOException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+
 import org.xml.sax.*;
 import org.w3c.dom.*;
-import java.util.*;
 
 /**
- * User: Tanner
- * Date: 11/4/2014
- * Time: 11:30 AM
- * To change this template use File | Settings | File Templates.
+ * User: Tanner Date: 11/4/2014 Time: 11:30 AM To change this template use File
+ * | Settings | File Templates. Updated by: Santhosh
  */
-public class Player
-{
-	String username = null;
-	String password = null;
-	String secretQuestion = null;
-	String secretAnswer = null;
-	ArrayList<String> ListofPlayers;
+public class Player {
 
-	public boolean createPlayer(String xml)
-	{
-		ListofPlayers = new ArrayList<String>();
-		Document document;
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		try
-		{
-			DocumentBuilder db = dbFactory.newDocumentBuilder();
+	private String username, password, secretQuestion, securityAnswer;
+	private static final String USER_FILE = "Users.xml";
 
-			document = db.parse(xml);
-			Element e = document.getDocumentElement();
-
-			username = getTextValue(username, e, "username");
-			if (username != null)
-			{
-				if(!username.isEmpty())
-					{ListofPlayers.add(username);}
-			}
-            return true;
-		}
-        catch (ParserConfigurationException pce)
-        {System.out.println(pce.getMessage());}
-        catch (SAXException se)
-        {System.out.println(se.getMessage());}
-        catch (IOException ioe)
-        {System.err.println(ioe.getMessage());}
-
-        return false;
+	public String getUsername() {
+		return username;
 	}
 
-	public void saveUser(String xmlFile)
-	{
-		Document document;
-		Element element = null;
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		try
-		{
-			DocumentBuilder db = dbFactory.newDocumentBuilder();
-			document = db.newDocument();
+	public String getPassword() {
+		return password;
+	}
 
-			Element root = document.createElement("User Information");
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-			element = document.createElement("Username");
-			element.appendChild(document.createElement(username));
-			root.appendChild(element);
+	public String getSecretQuestion() {
+		return secretQuestion;
+	}
 
+	public void setSecretQuestion(String secretQuestion) {
+		this.secretQuestion = secretQuestion;
+	}
 
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
+	}
+
+	public boolean register() throws ParserConfigurationException, TransformerException, SAXException, IOException {
+		if (validate()) {
+			return false;
+		}
+		String username = this.username;
+		String pwd = this.password;
+		String question = this.secretQuestion;
+		String answer = this.securityAnswer;
+
+		addUser(username, pwd, question, answer);
+
+		return true;
+	}
+
+	public boolean validate() throws SAXException, IOException, ParserConfigurationException {
+		URL url = getClass().getResource(USER_FILE);
+		if (url != null) {
+			File f = new File(url.getPath());
+			if (f.exists()) {
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+
+				NodeList elemNodeList = doc.getElementsByTagName("user");
+
+				for (int j = 0; j < elemNodeList.getLength(); j++) {
+					Node user = elemNodeList.item(j);
+					Node usrname = user.getFirstChild();
+					if (usrname.getFirstChild().getNodeValue().equals(this.username)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public void getSecurityQA() throws SAXException, IOException, ParserConfigurationException {
+		URL url = getClass().getResource(USER_FILE);
+		if (url != null) {
+			File f = new File(url.getPath());
+			if (f.exists()) {
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+
+				NodeList elemNodeList = doc.getElementsByTagName("user");
+
+				for (int j = 0; j < elemNodeList.getLength(); j++) {
+					Node user = elemNodeList.item(j);
+					Node usrname = user.getFirstChild();
+					if (usrname.getFirstChild().getNodeValue().equals(this.username)) {
+						NodeList children = user.getChildNodes();
+						for (int i = 0; i < children.getLength(); i++) {
+							Node node = children.item(i);
+							if(node.getFirstChild().getNodeName().equals("question")) {
+								this.setSecretQuestion(node.getFirstChild().getNodeValue());
+							}
+							if(node.getFirstChild().getNodeName().equals("answer")) {
+								this.setSecurityAnswer(node.getFirstChild().getNodeValue());
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void addUser(String username, String pwd, String question, String answer)
+			throws ParserConfigurationException, TransformerException, IOException, SAXException {
+		URL url = getClass().getResource(USER_FILE);
+		File f = new File(url.getPath());
+		
+		DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+		Document document = null;
+		Element root = null;
+		
+		if(f.exists()) {
+			 document = documentBuilder.parse(f);
+			 root = document.getDocumentElement();
+		} else {
+			f.createNewFile();
+			document = documentBuilder.newDocument();
+			// root element
+			root = document.createElement("users");
 			document.appendChild(root);
-			try
-			{
-				Transformer tr = TransformerFactory.newInstance().newTransformer();
-				tr.setOutputProperty(OutputKeys.INDENT, "yes");
-				tr.setOutputProperty(OutputKeys.METHOD, "xml");
-				tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-				tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
-				tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
-                tr.transform(new DOMSource(document),new StreamResult(new FileOutputStream(xmlFile)));
-			}
-			catch(TransformerException te)
-			{
-				System.out.println(te.getMessage());
-			}
-			catch(IOException ioe)
-			{
-				System.out.println(ioe.getMessage());
-			}
-		}
-		catch (ParserConfigurationException pce)
-		{
-			System.out.println("UsersXML: Error trying to instantiate DocumentBuilder " + pce);
-    	}
-	}
-
-	public void setTextValue(String information, Element doc, String tag)
-	{
-		Node node = getNode(tag,
-
-		NodeList nodeList = node.getElementsByTagName(tag);
-		for (int i = 0; i < childNodes.getLength(); i++)
-		{
-			Node info = child
 		}
 
-	}
+		// root element
+		Element user = document.createElement("user");
+		root.appendChild(user);
 
-	public String getTextValue(String information, Element doc, String tag)
-	{
-		String info = information;
-		NodeList nodeList = doc.getElementsByTagName(tag);
+		// username element
+		Element usernameElement = document.createElement("username");
+		usernameElement.appendChild(document.createTextNode(username));
+		user.appendChild(usernameElement);
 
-		if (nodeList.getLength() > 0 && nodeList.item(0).hasChildNodes())
-		{
-			info = nodeList.item(0).getFirstChild().getNodeValues();
-		}
+		// password element
+		Element passwordElement = document.createElement("password");
+		passwordElement.appendChild(document.createTextNode(pwd));
+		user.appendChild(passwordElement);
 
-		return info;
+		// security question element
+		Element secQElement = document.createElement("question");
+		secQElement.appendChild(document.createTextNode(secretQuestion));
+		user.appendChild(secQElement);
+
+		// security answer elements
+		Element secAElement = document.createElement("answer");
+		secAElement.appendChild(document.createTextNode(answer));
+		user.appendChild(secAElement);
+
+		// create the xml file
+		// transform the DOM Object to an XML File
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource domSource = new DOMSource(document);
+		StreamResult streamResult = new StreamResult(f);
+
+		transformer.transform(domSource, streamResult);
 	}
 }

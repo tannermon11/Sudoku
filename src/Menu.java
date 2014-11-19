@@ -11,20 +11,21 @@ import java.io.IOException;
  * Date: 10/30/2014
  * Time: 9:42 PM
  * To change this template use File | Settings | File Templates.
+ * Update by: Santhosh
  */
 
 public class Menu extends JFrame {
-    JPanel bPanel, mPanel;
-    static JFrame frame, mFrame;
-    JButton play, load, highscore, manual, back;
-    JLabel user;
-    static JComboBox difficultyBox;
-    Timer timer = null;
+    public static JPanel bPanel, mPanel;
+    public static JFrame frame, mFrame;
+    public JButton play, load, highscore, manual, back;
+    public static JLabel user;
+    public static JComboBox difficultyBox;
+    public Timer timer = null;
     int minutes_elapsed = 0, seconds_elapsed = 0;
-    JTextArea mTextArea;
-    File manualFile = new File("Manual.txt");
-    FileReader fr = null;
-    BufferedReader reader = null;
+    public JTextArea mTextArea;
+    public File manualFile = new File("Manual.txt");
+    public FileReader fr = null;
+    public BufferedReader reader = null;
 
     public Menu() {
         frame = new JFrame();
@@ -32,7 +33,7 @@ public class Menu extends JFrame {
         difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
         difficultyBox.setSelectedIndex(0);
 
-        user = new JLabel("User: " + SubMenu.player.username);
+        user = new JLabel("User: " + SubMenu.player.getUsername());
         play = new JButton("Play");
         load = new JButton("Load");
         highscore = new JButton("Hall of Fame");

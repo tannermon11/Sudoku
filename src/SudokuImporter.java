@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * User: Tanner
@@ -15,8 +16,10 @@ public class SudokuImporter {
     int[][] solutionGrid = new int[9][9];
     int row, column, number;
     public SudokuImporter() {
-        File file = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\test.txt");
-        File solution = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\solution.txt");
+    	URL url = getClass().getResource("test.txt");
+        File file = new File(url.getPath());
+        url = getClass().getResource("solution.txt");
+        File solution = new File(url.getPath());
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(file));

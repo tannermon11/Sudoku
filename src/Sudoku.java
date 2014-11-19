@@ -5,8 +5,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import javax.swing.*;
-import java.awt.*;
+
 
 
 public class Sudoku {

@@ -3,10 +3,9 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.File;
 
 
 /**
@@ -157,7 +156,7 @@ public class SudokuGUI extends JFrame {
                 //textFields[x][y].setText("\u00B2 :: \u2074");
                 ((AbstractDocument)textFields[x][y].getDocument()).setDocumentFilter(
                         new MyDocumentFilter(x, y));
-                textFields[x][y].setHorizontalAlignment(JTextField.CENTER);
+                textFields[x][y].setHorizontalAlignment(SwingConstants.CENTER);
 
                 if (x < 3 && y < 3)
                     panel[0].add(textFields[x][y]);
