@@ -57,16 +57,16 @@ public class SubMenu extends JFrame {
 		});
 
 		guest.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				subFrame.dispose();
-				new Menu();
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subFrame.dispose();
+                new Menu();
 				/*
 				 * SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
 				 * mcl.createAndShowGUI();
 				 */
-			}
-		});
+            }
+        });
 
 		subFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		subFrame.setVisible(true);
@@ -83,50 +83,50 @@ public class SubMenu extends JFrame {
 		final JPasswordField passwordInput = new JPasswordField(7);
 		JLabel name = new JLabel("Name: ");
 		JLabel pass = new JLabel("Password: ");
-		JLabel loginFailed = new JLabel("Login failed. Please check your username or password");
+		final JLabel loginFailed = new JLabel("Login failed. Please check your username or password");
 		loginFailed.setVisible(false);
 
 		loginButton.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				player.setUsername(nameInput.getText());
-				player.setPassword(passwordInput.getText());
-				System.out.println("Username: " + player.getUsername());
-				System.out.println("Password: " + player.getPassword());
-				try {
-					if (player.validate()) {
-						profile();
-						login.dispose();
-					} else {
-						loginFailed.setVisible(true);
-						// Tanner : Show loginFailed message in loginPanel
-					}
-				} catch (SAXException | IOException | ParserConfigurationException e1) {
-					e1.printStackTrace();
-				}
-				// new Menu();
+            @SuppressWarnings("deprecation")
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                player.setUsername(nameInput.getText());
+                player.setPassword(passwordInput.getText());
+                System.out.println("Username: " + player.getUsername());
+                System.out.println("Password: " + player.getPassword());
+                try {
+                    if (player.validate()) {
+                        profile();
+                        login.dispose();
+                    } else {
+                        loginFailed.setVisible(true);
+                        // Tanner : Show loginFailed message in loginPanel
+                    }
+                } catch (SAXException | IOException | ParserConfigurationException e1) {
+                    e1.printStackTrace();
+                }
+                // new Menu();
 
-			}
-		});
+            }
+        });
 		
 		forgotPwd.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				login.dispose();
-				forgotPwd();
-			}
-		});
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                login.dispose();
+                forgotPwd();
+            }
+        });
 
 		goToMainScreen.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				login.dispose();
-				new SubMenu();
-			}
-		});
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                login.dispose();
+                new SubMenu();
+            }
+        });
 
 		loginPanel.add(name);
 		loginPanel.add(nameInput);
@@ -197,12 +197,12 @@ public class SubMenu extends JFrame {
 		JLabel pass = new JLabel("Password: ");
 		JLabel confirm = new JLabel("Confirm Password:");
 		JLabel secQ = new JLabel("Security Question:");
-		JComboBox<String> securityQuestions = new JComboBox<String>();
+		final JComboBox<String> securityQuestions = new JComboBox<String>();
 		securityQuestions.addItem("What is your first crush name?");
 		securityQuestions.addItem("What is your first nick name?");
 		securityQuestions.addItem("Where did you attend your first school?");
 		securityQuestions.addItem("Which city you were born in?");
-		JLabel secQA = new JLabel("Security Answer");
+		final JLabel secQA = new JLabel("Security Answer");
 		JLabel usernameNA = new JLabel("Sorry! Username not available");
 
 		registerButton.addActionListener(new ActionListener() {
@@ -261,8 +261,8 @@ public class SubMenu extends JFrame {
 	
 	public void forgotPwd() {
 		final JFrame forgot = new JFrame();
-		JPanel forgotPwdPanel = new JPanel();
-		JButton showPassword = new JButton("Show Password");
+		final JPanel forgotPwdPanel = new JPanel();
+		final JButton showPassword = new JButton("Show Password");
 		JButton next = new JButton("Next");
 		JButton goToMainScreen = new JButton("Back to Main Screen");
 		final JTextField nameInput = new JTextField(7);
@@ -304,12 +304,12 @@ public class SubMenu extends JFrame {
 
 		goToMainScreen.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				forgot.dispose();
-				new SubMenu();
-			}
-		});
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                forgot.dispose();
+                new SubMenu();
+            }
+        });
 
 		forgotPwdPanel.add(name);
 		forgotPwdPanel.add(nameInput);

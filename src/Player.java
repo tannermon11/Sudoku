@@ -116,20 +116,20 @@ public class Player {
 			}
 		}
 	}
-	
+
 	public void addUser(String username, String pwd, String question, String answer)
 			throws ParserConfigurationException, TransformerException, IOException, SAXException {
 		URL url = getClass().getResource(USER_FILE);
 		File f = new File(url.getPath());
-		
+
 		DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
 		Document document = null;
 		Element root = null;
-		
+
 		if(f.exists()) {
-			 document = documentBuilder.parse(f);
-			 root = document.getDocumentElement();
+			document = documentBuilder.parse(f);
+			root = document.getDocumentElement();
 		} else {
 			f.createNewFile();
 			document = documentBuilder.newDocument();

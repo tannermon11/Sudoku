@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 
 /**
  * User: Tanner
@@ -20,6 +21,9 @@ public class SudokuImporter {
         File file = new File(url.getPath());
         url = getClass().getResource("solution.txt");
         File solution = new File(url.getPath());
+        Random rand = new Random();
+        /*File file = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\test.txt");
+        File solution = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\solution.txt");*/
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(file));

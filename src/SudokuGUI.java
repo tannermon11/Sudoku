@@ -7,7 +7,6 @@ import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.*;
 
-
 /**
  * User: Tanner
  * Date: 9/24/2014
@@ -19,8 +18,7 @@ public class SudokuGUI extends JFrame {
     JPanel[] panel = new JPanel[9];
     JPanel bPanel, tPanel, pausePanel;
     JButton highscore, manual, hints, pause, end, notes;
-    static JLabel user;
-    static JLabel time, rateLabel;
+    static JLabel user, difficultyLabel, time, rateLabel;
     JTextField[][] textFields;
     static Timer timer = null;
     static int rating, timeBonus, Accuracy, solveAids;
@@ -31,6 +29,7 @@ public class SudokuGUI extends JFrame {
     SudokuImporter si = new SudokuImporter();
 
     public SudokuGUI() {
+        String difficulty = Menu.difficultyBox.getSelectedItem().toString();
         frame = new JFrame("Sudoku");
         for (int i=0; i<panel.length; i++) {
             panel[i] = new JPanel();
@@ -44,6 +43,8 @@ public class SudokuGUI extends JFrame {
         notes = new JButton("Notes");
         time = new JLabel();
         rateLabel = new JLabel();
+        user = new JLabel("User: " + SubMenu.player.getUsername());
+        difficultyLabel = new JLabel("Difficulty: " + difficulty);
         time.setForeground(Color.blue);
         textFields = new JTextField[Sudoku.GRID_SIZE][Sudoku.GRID_SIZE];
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,13 +54,15 @@ public class SudokuGUI extends JFrame {
             aPanel.setLayout(new GridLayout(3, 3));
         }
         bPanel.setLayout(new GridLayout(8, 1));
-        tPanel.setLayout(new BorderLayout());
+        tPanel.setLayout(new BoxLayout(tPanel, BoxLayout.PAGE_AXIS));
 
         for (JPanel aPanel : panel) {
             frame.add(aPanel);
         }
-        tPanel.add(time, BorderLayout.NORTH);
-        tPanel.add(rateLabel, BorderLayout.SOUTH);
+        tPanel.add(time);
+        tPanel.add(rateLabel);
+        tPanel.add(user);
+        tPanel.add(difficultyLabel);
         frame.add(bPanel);
         frame.add(tPanel); //Try to add first then messes up grid
         bPanel.add(hints);
@@ -94,6 +97,7 @@ public class SudokuGUI extends JFrame {
                 minutes_elapsed = 0; seconds_elapsed  = 0;
                 timer.stop();
                 Menu.frame.setVisible(true);
+                displaySolution();
                 frame.dispose();
             }
         });
@@ -127,7 +131,6 @@ public class SudokuGUI extends JFrame {
                 }
             }
         });
-        String difficulty = Menu.difficultyBox.getSelectedItem().toString();
         switch (difficulty) {
             case "Easy":
                 rating = 10;
@@ -224,72 +227,57 @@ public class SudokuGUI extends JFrame {
             timer.stop();
     }
 
-    public class myCardLayout {
-        JPanel cardHolder;
-        JPanel card1, card2, buttonPane;
-        public CardLayout cardLayout = new CardLayout();
-        String tPanel = "Card with testing & 2";
-        String bPanel = "Card with testing3";
-        /*JButton bShowOne = new JButton(new showOne());
-        JButton bShowTwo = new JButton(new showTwo());*/
+    public void displaySolution() {
+        final JFrame solution = new JFrame();
+        JPanel solutionPanel = new JPanel();
+        JPanel gameOver = new JPanel();
+        JPanel buttonPanel = new JPanel();
+        JButton dashboard = new JButton("Go to dashboard");
 
-        /*public void addComponentToPane (Container pane){
-            buttonPane = new JPanel();
-       /*     buttonPane.add(bShowOne);
-            buttonPane.add(bShowTwo);
+        solutionPanel.setLayout(new GridLayout(9, 9));
+        solution.setLayout(new GridLayout(1,2));
+        gameOver.setLayout(new GridLayout(5,1));
+        buttonPanel.setLayout(new FlowLayout());
+        dashboard.setSize(new Dimension(20, 15));
 
-            card1 = new JPanel();
-            JButton test = new JButton("testing");
-            JButton test2 = new JButton("testing2");
-            card1.add(test);
-            card1.add(test2);
-            card2 = new JPanel();
-            JButton test3 = new JButton("Go Back");
-            card2.add(test3);
+        gameOver.add(user);
+        gameOver.add(difficultyLabel);
+        gameOver.add(time);
+        gameOver.add(rateLabel);
+        buttonPanel.add(dashboard);
 
-            cardHolder = new JPanel(cardLayout);
-            cardHolder.add(card1, tPanel);
-            cardHolder.add(card2, bPanel);
-            pane.add(buttonPane, BorderLayout.PAGE_START);
-            pane.add(cardHolder, BorderLayout.CENTER);
-
-        }*/
-
-        /*private class showOne extends AbstractAction {
-            public showOne() { super("Show hugraigeasg"); }
+        dashboard.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardHolder, tPanel);
-                buttonPane.remove(bShowTwo);
-                buttonPane.revalidate();
-                buttonPane.repaint();
+                solution.dispose();
+                new Menu();
+            }
+        });
+
+        for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
+            for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
+                boolean empty = textFields[x][y].getText().length() == 0;
+                boolean preset = !textFields[x][y].isEditable();
+                JTextField new_field = new JTextField(String.valueOf(si.getSolution(y, x)));
+                if (empty){
+                    new_field.setFont(new Font("SansSerif", Font.PLAIN, 10));
+                }
+                if (preset){
+                    new_field.setFont(new Font("SansSerif", Font.BOLD, 15));
+                }
+                new_field.setEditable(false);
+                new_field.setHorizontalAlignment(JTextField.CENTER);
+                solutionPanel.add(new_field);
             }
         }
 
-        private class showTwo extends AbstractAction {
-            public showTwo() { super("Show Two"); }
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardHolder, bPanel);
-                buttonPane.remove(bShowOne);
-                buttonPane.revalidate();
-                buttonPane.repaint();
-            }
-        }*/
+        gameOver.add(buttonPanel);
+        solution.add(gameOver);
+        solution.add(solutionPanel);
 
-        /*public void itemStateChanged(ItemEvent e) {
-            CardLayout cl = (CardLayout) (cardHolder.getLayout());
-            cl.show(cardHolder, (String) e.getItem());
-        }*/
-
-        public void createAndShowGUI() {
-            JFrame frame = new JFrame();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            //myCardLayout myLayout = new myCardLayout();
-            //myLayout.addComponentToPane(frame.getContentPane());
-
-            frame.pack();
-            frame.setVisible(true);
-        }
+        solution.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        solution.setVisible(true);
+        solution.setSize(500, 500);
     }
 
     class MyDocumentFilter extends DocumentFilter {
