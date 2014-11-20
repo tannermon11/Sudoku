@@ -1,4 +1,10 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +12,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 /**
  * User: Tanner
  * Date: 10/30/2014
@@ -16,8 +25,8 @@ import java.io.IOException;
 
 public class Menu extends JFrame {
     public static JPanel bPanel, mPanel;
-    public static JFrame frame, mFrame;
-    public JButton play, load, highscore, manual, back;
+    public static JFrame frame, mFrame, scoreCardFrame;
+    public JButton play, load, highscore, manual, back, goToMainScreen;
     public static JLabel user;
     public static JComboBox difficultyBox;
     public Timer timer = null;
@@ -38,6 +47,9 @@ public class Menu extends JFrame {
         load = new JButton("Load");
         highscore = new JButton("Hall of Fame");
         manual = new JButton("How-To-Play");
+        back = new JButton("Go to Main Menu");
+        goToMainScreen = new JButton("Back to Main Screen");
+        
 
         difficultyBox.addActionListener(new ActionListener()
         {
@@ -80,7 +92,7 @@ public class Menu extends JFrame {
 					mFrame = new JFrame();
 					mTextArea = new JTextArea();
 					mPanel = new JPanel();
-					back = new JButton("Close");
+					back = new JButton("Back to Dashboard");
 
 					try
 					{
@@ -113,20 +125,98 @@ public class Menu extends JFrame {
 				}
             }
         });
+        
+        back.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                frame.dispose();
+                new SubMenu().profile();
+            }
+        });
+        
+        highscore.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //add to table
+            	try {
+					List<Player> players = SubMenu.player.getScoreCard();
+					scoreBoard(players);
+					frame.dispose();
+				} catch (SAXException | IOException | ParserConfigurationException e1) {
+					e1.printStackTrace();
+				}
+            }
+        });
+        
+        goToMainScreen.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				frame.dispose();
+				new SubMenu();
+			}
+		});
 
-
-        highscore.setBackground(new Color(126, 237, 235));
         bPanel.add(user);
         bPanel.add(difficultyBox);
         bPanel.add(play);
         bPanel.add(load);
         bPanel.add(highscore);
         bPanel.add(manual);
+        bPanel.add(back);
+        bPanel.add(goToMainScreen);
+        if(SubMenu.player.getUsername()==null) {
+        	user.setVisible(false);
+        	load.setVisible(false);
+        	back.setVisible(false);
+        } else {
+        	goToMainScreen.setVisible(false);
+        }
         frame.add(bPanel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(500, 500);
     }
+    
+    public void scoreBoard(List<Player> players) {
+		scoreCardFrame = new JFrame();
+		final JButton back = new JButton("Back to Dashboard");
+		List<String> columns = new ArrayList<String>();
+        List<String[]> values = new ArrayList<String[]>();
+        columns.add("User");
+        columns.add("Score");
+        
+        if(players!=null) {
+        	Iterator<Player> playerIter = players.iterator();
+        	while(playerIter.hasNext()) {
+        		Player user = playerIter.next();
+        		values.add(new String[] {user.getUsername(),user.getScore()});
+        	}
+        }
+        
+        back.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+            	scoreCardFrame.dispose();
+                new Menu();
+            }
+        });
+
+        TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns.toArray());
+        JTable table = new JTable(tableModel);
+        
+        scoreCardFrame.setLayout(new BorderLayout());
+        scoreCardFrame.add(new JScrollPane(table), BorderLayout.CENTER);
+        scoreCardFrame.add(table.getTableHeader(), BorderLayout.NORTH);
+        scoreCardFrame.add(back,BorderLayout.SOUTH);
+        scoreCardFrame.setVisible(true);
+		scoreCardFrame.setSize(500, 500);
+	}
 }

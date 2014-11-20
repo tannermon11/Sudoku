@@ -1,6 +1,10 @@
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
@@ -14,9 +18,9 @@ import org.w3c.dom.*;
  * User: Tanner Date: 11/4/2014 Time: 11:30 AM To change this template use File
  * | Settings | File Templates. Updated by: Santhosh
  */
-public class Player {
+public class Player implements Comparator<Player> {
 
-	private String username, password, secretQuestion, securityAnswer;
+	private String username, password, secretQuestion, securityAnswer, score;
 	private static final String USER_FILE = "Users.xml";
 
 	public String getUsername() {
@@ -51,35 +55,57 @@ public class Player {
 		this.securityAnswer = securityAnswer;
 	}
 
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
 	public boolean register() throws ParserConfigurationException, TransformerException, SAXException, IOException {
-		if (validate()) {
+		if (validate(true)) {
 			return false;
 		}
 		String username = this.username;
 		String pwd = this.password;
 		String question = this.secretQuestion;
 		String answer = this.securityAnswer;
+		String score = 0 + "";
 
-		addUser(username, pwd, question, answer);
+		addUser(username, pwd, question, answer, score);
 
 		return true;
 	}
 
-	public boolean validate() throws SAXException, IOException, ParserConfigurationException {
+	public boolean validate(boolean checkOnlyForUsername) throws SAXException, IOException,
+			ParserConfigurationException {
 		URL url = getClass().getResource(USER_FILE);
 		if (url != null) {
 			File f = new File(url.getPath());
 			if (f.exists()) {
-				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-				Document doc = dbf.newDocumentBuilder().parse(url.getPath());
-
-				NodeList elemNodeList = doc.getElementsByTagName("user");
-
-				for (int j = 0; j < elemNodeList.getLength(); j++) {
-					Node user = elemNodeList.item(j);
-					Node usrname = user.getFirstChild();
-					if (usrname.getFirstChild().getNodeValue().equals(this.username)) {
-						return true;
+				String username = null;
+				String pwd = null;
+				List<Node> user = getUserNode(url, false);
+				if (user != null) {
+					NodeList children = user.get(0).getChildNodes();
+					for (int i = 0; i < children.getLength(); i++) {
+						Node node = children.item(i);
+						if (node.getNodeName().equals("username")) {
+							username = node.getFirstChild().getNodeValue();
+						}
+						if (node.getNodeName().equals("password")) {
+							pwd = node.getFirstChild().getNodeValue();
+						}
+					}
+					if (!checkOnlyForUsername) {
+						if (compareString(username, this.getUsername()) && compareString(pwd, this.getPassword())) {
+							return true;
+						}
+					} else {
+						if (compareString(username, this.getUsername())) {
+							return true;
+						}
 					}
 				}
 			}
@@ -87,7 +113,7 @@ public class Player {
 		return false;
 	}
 
-	public void getSecurityQA() throws SAXException, IOException, ParserConfigurationException {
+	public Player getSecurityQA() throws SAXException, IOException, ParserConfigurationException {
 		URL url = getClass().getResource(USER_FILE);
 		if (url != null) {
 			File f = new File(url.getPath());
@@ -96,6 +122,8 @@ public class Player {
 				Document doc = dbf.newDocumentBuilder().parse(url.getPath());
 
 				NodeList elemNodeList = doc.getElementsByTagName("user");
+				Player player = new Player();
+				player.setUsername(this.username);
 
 				for (int j = 0; j < elemNodeList.getLength(); j++) {
 					Node user = elemNodeList.item(j);
@@ -104,20 +132,25 @@ public class Player {
 						NodeList children = user.getChildNodes();
 						for (int i = 0; i < children.getLength(); i++) {
 							Node node = children.item(i);
-							if(node.getFirstChild().getNodeName().equals("question")) {
-								this.setSecretQuestion(node.getFirstChild().getNodeValue());
+							if (node.getNodeName().equals("question")) {
+								player.setSecretQuestion(node.getFirstChild().getNodeValue());
 							}
-							if(node.getFirstChild().getNodeName().equals("answer")) {
-								this.setSecurityAnswer(node.getFirstChild().getNodeValue());
+							if (node.getNodeName().equals("answer")) {
+								player.setSecurityAnswer(node.getFirstChild().getNodeValue());
+							}
+							if (node.getNodeName().equals("password")) {
+								player.setPassword(node.getFirstChild().getNodeValue());
 							}
 						}
 					}
 				}
+				return player;
 			}
 		}
+		return null;
 	}
 
-	public void addUser(String username, String pwd, String question, String answer)
+	public void addUser(String username, String pwd, String question, String answer, String score)
 			throws ParserConfigurationException, TransformerException, IOException, SAXException {
 		URL url = getClass().getResource(USER_FILE);
 		File f = new File(url.getPath());
@@ -127,7 +160,7 @@ public class Player {
 		Document document = null;
 		Element root = null;
 
-		if(f.exists()) {
+		if (f.exists()) {
 			document = documentBuilder.parse(f);
 			root = document.getDocumentElement();
 		} else {
@@ -162,6 +195,11 @@ public class Player {
 		secAElement.appendChild(document.createTextNode(answer));
 		user.appendChild(secAElement);
 
+		// security answer elements
+		Element scoreElement = document.createElement("score");
+		scoreElement.appendChild(document.createTextNode(score));
+		user.appendChild(scoreElement);
+
 		// create the xml file
 		// transform the DOM Object to an XML File
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -171,4 +209,101 @@ public class Player {
 
 		transformer.transform(domSource, streamResult);
 	}
+
+	public List<Node> getUserNode(URL url, boolean all) throws SAXException, IOException, ParserConfigurationException {
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+
+		NodeList elemNodeList = doc.getElementsByTagName("user");
+		List<Node> users = new ArrayList<Node>();
+
+		for (int j = 0; j < elemNodeList.getLength(); j++) {
+			Node user = elemNodeList.item(j);
+			Node usrname = user.getFirstChild();
+			if (usrname.getFirstChild().getNodeValue().equals(this.username) && !all) {
+				users.add(user);
+				return users;
+			}
+			users.add(user);
+		}
+		return users;
+	}
+
+	public List<Player> getScoreCard() throws SAXException, IOException, ParserConfigurationException {
+		URL url = getClass().getResource(USER_FILE);
+		List<Node> users = getUserNode(url, true);
+		List<Player> players = new ArrayList<Player>();
+		String username = null;
+		String score = null;
+		for (Node user : users) {
+			if (user != null) {
+				Player player = new Player();
+				NodeList children = user.getChildNodes();
+				for (int i = 0; i < children.getLength(); i++) {
+					Node node = children.item(i);
+					if (node.getNodeName().equals("username")) {
+						username = node.getFirstChild().getNodeValue();
+						player.setUsername(username);
+					}
+					if (node.getNodeName().equals("score")) {
+						score = node.getFirstChild().getNodeValue();
+						player.setScore(score);
+					}
+				}
+				players.add(player);
+			}
+		}
+		Collections.sort(players, Collections.reverseOrder(new Player()));
+		return players;
+	}
+
+	public boolean compareString(String str1, String str2) {
+		if (str1 != null && str2 != null && !str1.trim().equals("") && !str2.trim().equals("")
+				&& str1.trim().equals(str2.trim())) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int compare(Player player1, Player player2) {
+		int score1 = Integer.parseInt(player1.getScore());
+		int score2 = Integer.parseInt(player2.getScore());
+		if (score1 > score2) {
+			return 1;
+		} else if (score1 == score2) {
+			return 0;
+		}
+		return -1;
+	}
+
+	public void saveScore() throws SAXException, IOException, ParserConfigurationException, TransformerException {
+		URL url = getClass().getResource(USER_FILE);
+		File f = new File(url.getPath());
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+
+		List<Node> user = getUserNode(url, false);
+		if (user != null) {
+			NodeList children = user.get(0).getChildNodes();
+			for (int i = 0; i < children.getLength(); i++) {
+				Node node = children.item(i);
+				if (node.getNodeName().equals("score")) {
+					int totalScore = Integer.parseInt(score) + Integer.parseInt(this.getScore());
+					node.getFirstChild().setNodeValue(totalScore + "");
+				}
+			}
+		}
+
+		// save the result
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource domSource = new DOMSource(doc);
+		StreamResult streamResult = new StreamResult(f);
+		transformer.transform(domSource, streamResult);
+	}
+	
+	// things to do score set properly to db
+	// score set properly after game
 }

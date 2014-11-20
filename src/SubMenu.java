@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.xml.sax.SAXException;
 
@@ -57,16 +58,16 @@ public class SubMenu extends JFrame {
 		});
 
 		guest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                subFrame.dispose();
-                new Menu();
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				subFrame.dispose();
+				new Menu();
 				/*
 				 * SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
 				 * mcl.createAndShowGUI();
 				 */
-            }
-        });
+			}
+		});
 
 		subFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		subFrame.setVisible(true);
@@ -87,46 +88,44 @@ public class SubMenu extends JFrame {
 		loginFailed.setVisible(false);
 
 		loginButton.addActionListener(new ActionListener() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                player.setUsername(nameInput.getText());
-                player.setPassword(passwordInput.getText());
-                System.out.println("Username: " + player.getUsername());
-                System.out.println("Password: " + player.getPassword());
-                try {
-                    if (player.validate()) {
-                        profile();
-                        login.dispose();
-                    } else {
-                        loginFailed.setVisible(true);
-                        // Tanner : Show loginFailed message in loginPanel
-                    }
-                } catch (SAXException | IOException | ParserConfigurationException e1) {
-                    e1.printStackTrace();
-                }
-                // new Menu();
+			@SuppressWarnings("deprecation")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				player.setUsername(nameInput.getText());
+				player.setPassword(passwordInput.getText());
+				System.out.println("Username: " + player.getUsername());
+				System.out.println("Password: " + player.getPassword());
+				try {
+					if (player.validate(false)) {
+						profile();
+						login.dispose();
+					} else {
+						loginFailed.setVisible(true);
+					}
+				} catch (SAXException | IOException | ParserConfigurationException e1) {
+					e1.printStackTrace();
+				}
 
-            }
-        });
-		
+			}
+		});
+
 		forgotPwd.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                login.dispose();
-                forgotPwd();
-            }
-        });
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				login.dispose();
+				forgotPwd();
+			}
+		});
 
 		goToMainScreen.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                login.dispose();
-                new SubMenu();
-            }
-        });
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				login.dispose();
+				new SubMenu();
+			}
+		});
 
 		loginPanel.add(name);
 		loginPanel.add(nameInput);
@@ -152,6 +151,7 @@ public class SubMenu extends JFrame {
 		JLabel bestTime = new JLabel("Best time: ");
 		JButton dashboard = new JButton("Go to dashboard");
 		JButton settings = new JButton("Profile settings");
+		JButton logout = new JButton("Log out");
 
 		dashboard.addActionListener(new ActionListener() {
 			@Override
@@ -162,12 +162,27 @@ public class SubMenu extends JFrame {
 			}
 		});
 
+		logout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				profile.dispose();
+				try {
+					player.saveScore();
+				} catch (SAXException | IOException | ParserConfigurationException
+						| TransformerException e1) {
+					e1.printStackTrace();
+				}
+				new SubMenu();
+			}
+		});
+
 		statistics = new JPanel();
 		buttons = new JPanel();
 		statistics.setLayout(new GridLayout(4, 1));
 		buttons.setLayout(null);
 		dashboard.setBounds(50, 175, 150, 40); // x,y,width,height
 		settings.setBounds(50, 225, 150, 40);
+		logout.setBounds(50, 275, 150, 40);
 
 		statistics.add(statsLabel);
 		statistics.add(games);
@@ -175,6 +190,7 @@ public class SubMenu extends JFrame {
 		statistics.add(bestTime);
 		buttons.add(dashboard);
 		buttons.add(settings);
+		buttons.add(logout);
 
 		profile.add(statistics);
 		profile.add(buttons);
@@ -204,6 +220,7 @@ public class SubMenu extends JFrame {
 		securityQuestions.addItem("Which city you were born in?");
 		final JLabel secQA = new JLabel("Security Answer");
 		JLabel usernameNA = new JLabel("Sorry! Username not available");
+		JLabel pwdMismatch = new JLabel("Sorry! Passwords do not match");
 
 		registerButton.addActionListener(new ActionListener() {
 			@Override
@@ -211,24 +228,25 @@ public class SubMenu extends JFrame {
 				player.setUsername(nameInput.getText());
 				player.setPassword(passwordInput.getText());
 				player.setSecretQuestion((String) securityQuestions.getSelectedItem());
-				player.setSecurityAnswer(secQA.getText());
+				player.setSecurityAnswer(securityAnswer.getText());
 				try {
-					if (player.register()) {
-						profile();
-						register.dispose();
+					if (confirmPassword.getText().equals(passwordInput.getText())) {
+						if (player.register()) {
+							profile();
+							register.dispose();
+						} else {
+							pwdMismatch.setVisible(false);
+							usernameNA.setVisible(true);
+						}
 					} else {
-						// Tanner: Show usernameNA
+						usernameNA.setVisible(false);
+						pwdMismatch.setVisible(true);
 					}
 				} catch (ParserConfigurationException | TransformerException | SAXException | IOException e1) {
 					e1.printStackTrace();
 				}
-
 				System.out.println("Username: " + player.getUsername());
 				System.out.println("Password: " + player.getPassword());
-				// check for correct username and password
-				// if incorrect, prompt to re-enter or register or forget
-				// password
-
 			}
 		});
 
@@ -251,6 +269,10 @@ public class SubMenu extends JFrame {
 		registerPanel.add(securityQuestions);
 		registerPanel.add(secQA);
 		registerPanel.add(securityAnswer);
+		registerPanel.add(pwdMismatch);
+		pwdMismatch.setVisible(false);
+		registerPanel.add(usernameNA);
+		usernameNA.setVisible(false);
 		registerPanel.add(registerButton);
 		registerPanel.add(goToMainScreen);
 		register.add(registerPanel);
@@ -258,7 +280,7 @@ public class SubMenu extends JFrame {
 		register.setVisible(true);
 		register.setSize(1000, 1000);
 	}
-	
+
 	public void forgotPwd() {
 		final JFrame forgot = new JFrame();
 		final JPanel forgotPwdPanel = new JPanel();
@@ -266,54 +288,73 @@ public class SubMenu extends JFrame {
 		JButton next = new JButton("Next");
 		JButton goToMainScreen = new JButton("Back to Main Screen");
 		final JTextField nameInput = new JTextField(7);
-		final JTextField secAInput = new JPasswordField(15);
+		final JTextField secAInput = new JTextField(15);
 		JLabel name = new JLabel("Username: ");
-		JLabel usernameNA = new JLabel("Sorry! Username not found");
+		final JLabel usernameNA = new JLabel("Sorry! Username not found");
+		JLabel secQLabel = new JLabel();
+		final JLabel pwd = new JLabel("Your password: ");
+		JLabel password = new JLabel();
 
 		next.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				player.setUsername(nameInput.getText());
 				try {
-					if (player.validate()) {
-						player.getSecurityQA();
-						// Tanner: wanted to add these to the forgot Screen itself
-						JLabel secQLabel = new JLabel(player.getSecretQuestion());
-						forgotPwdPanel.add(secQLabel);
-						forgotPwdPanel.add(secAInput);
-						forgotPwdPanel.add(showPassword);
+					if (player.validate(true)) {
+						player = player.getSecurityQA();
+						if (player != null) {
+							secQLabel.setText(player.getSecretQuestion());
+							// Tanner: want to set the Sec Question to secQLabel
+							// (player.getSecurityQuestion())
+							secQLabel.setVisible(true);
+							secAInput.setVisible(true);
+							showPassword.setVisible(true);
+						}
 					} else {
-						// Tanner : Show user not found message in panel
+						usernameNA.setVisible(true);
 					}
 				} catch (SAXException | IOException | ParserConfigurationException e1) {
 					e1.printStackTrace();
 				}
-				// new Menu();
-
 			}
 		});
-		
+
 		showPassword.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JLabel pwd = new JLabel(player.getSecurityAnswer());
-				forgotPwdPanel.add(pwd);
+				if(secAInput.getText().equals(player.getSecurityAnswer())) {
+					pwd.setVisible(true);
+					password.setText(player.getPassword());
+					password.setVisible(true);
+				}
 			}
 		});
 
 		goToMainScreen.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                forgot.dispose();
-                new SubMenu();
-            }
-        });
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				forgot.dispose();
+				new SubMenu();
+			}
+		});
 
 		forgotPwdPanel.add(name);
 		forgotPwdPanel.add(nameInput);
 		forgotPwdPanel.add(next);
+		forgotPwdPanel.add(secQLabel);
+		secQLabel.setVisible(false);
+		forgotPwdPanel.add(secAInput);
+		secAInput.setVisible(false);
+		forgotPwdPanel.add(showPassword);
+		showPassword.setVisible(false);
+		forgotPwdPanel.add(pwd);
+		pwd.setVisible(false);
+		forgotPwdPanel.add(password);
+		password.setVisible(false);
+		forgotPwdPanel.add(usernameNA);
+		usernameNA.setVisible(false);
 		forgotPwdPanel.add(goToMainScreen);
 		forgot.add(forgotPwdPanel);
 
