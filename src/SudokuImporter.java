@@ -22,8 +22,6 @@ public class SudokuImporter {
         url = getClass().getResource("solution.txt");
         File solution = new File(url.getPath());
         Random rand = new Random();
-        /*File file = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\test.txt");
-        File solution = new File("C:\\Users\\Tanner\\Documents\\Sudoku\\src\\solution.txt");*/
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(file));

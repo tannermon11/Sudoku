@@ -109,28 +109,12 @@ public class SudokuGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (!notesEnabled) {
 					notesEnabled = true;
-					font1 = new Font("SansSerif", Font.BOLD, 10);
-					for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
-						for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
-							if (textFields[x][y] == null)
-								textFields[x][y].setFont(font1);
-						}
 					}
-					System.out.println(notesEnabled);
-				} else {
+				else {
 					notesEnabled = false;
-					font2 = new Font("SansSerif", Font.PLAIN, 15);
-					for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
-						for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
-							if (textFields[x][y] == null)
-								textFields[x][y].setFont(font2);
-							frame.revalidate();
-							frame.repaint();
-						}
 					}
 					System.out.println(notesEnabled);
 				}
-			}
 		});
 		switch (difficulty) {
 		case "Easy":
@@ -157,8 +141,8 @@ public class SudokuGUI extends JFrame {
 				if (!String.valueOf(si.getNumber(y, x)).equalsIgnoreCase("0")) {
 					textFields[x][y].setText(String.valueOf(si.getNumber(y, x)));
 					textFields[x][y].setEditable(false);
+					textFields[x][y].setForeground(Color.BLUE); //Initial numbers on board
 				}
-				// textFields[x][y].setText("\u00B2 :: \u2074");
 				((AbstractDocument) textFields[x][y].getDocument()).setDocumentFilter(new MyDocumentFilter(x, y));
 				textFields[x][y].setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -182,11 +166,19 @@ public class SudokuGUI extends JFrame {
 					panel[7].add(textFields[x][y]);
 				if (x >= 6 && y >= 6)
 					panel[8].add(textFields[x][y]);
+
+				if(SubMenu.modeColor) {
+					textFields[x][y].setBackground(Color.black);
+					textFields[x][y].setForeground(Color.BLUE); //Initial numbers on board
+				}
 			}
 		}
 
 		for (JPanel aPanel : panel) {
-			aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
+			if(SubMenu.modeColor)
+				aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white));
+			else
+				aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
 		}
 
 		frame.setVisible(true);
@@ -357,18 +349,9 @@ public class SudokuGUI extends JFrame {
 		}
 
 		public void checkAccuracy(String num, int x, int y) {
-			// get x and y of word
-			// then check word
-			// in solution at x,y
-			if (!si.getSolution(x, y).equals(num))
+			if (!si.getSolution(y, x).equals(num) && !notesEnabled)
 				Accuracy += 50;
 			System.out.println(x + ":" + y);
-		}
-
-		public JTextField getFontEditorField(Font font) {
-			JTextField field = new JTextField();
-			field.setFont(font);
-			return field;
 		}
 	}
 }

@@ -21,22 +21,17 @@ public class SubMenu extends JFrame {
 	public static JPanel subPanel;
 	public static JTextArea test;
 	public static Player player = new Player();
+	public static boolean modeColor = false;
 
 	public SubMenu() {
 		subPanel = new JPanel();
 		subFrame = new JFrame();
-		/*
-		 * test = new JTextArea();//Testing jtextarea, might need to switch from
-		 * jtextfield test.setPreferredSize(new Dimension(75,50));
-		 * test.setLineWrap(true);
-		 */
 		JButton login = new JButton("Login");
 		JButton register = new JButton("Register");
 		JButton guest = new JButton("Guest");
 		subPanel.add(login);
 		subPanel.add(register);
 		subPanel.add(guest);
-		// subPanel.add(test);
 		subFrame.add(subPanel);
 		login.setBackground(Color.ORANGE);
 		register.setBackground(Color.green);
@@ -162,6 +157,14 @@ public class SubMenu extends JFrame {
 			}
 		});
 
+		settings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				profile.dispose();
+				settings();
+			}
+		});
+
 		logout.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -200,6 +203,47 @@ public class SubMenu extends JFrame {
 		profile.setSize(500, 500);
 	}
 
+	public void settings() {
+		final JFrame settings = new JFrame("Profile Settings");
+		JPanel settingPanel = new JPanel();
+		JButton save = new JButton("Save settings");
+		@SuppressWarnings("unchecked")
+		final JComboBox color = new JComboBox(new String[]{"White background / Black lines",
+				"Black background / White lines"});
+
+		color.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println(color.getSelectedItem().toString());
+				if(color.getSelectedItem().toString().equalsIgnoreCase("White background / Black lines"))
+					modeColor = false;
+				if(color.getSelectedItem().toString().equalsIgnoreCase("Black background / White lines"))
+					modeColor = true;
+			}
+		});
+
+		save.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				settings.dispose();
+				profile();
+			}
+		});
+
+		settingPanel.setLayout(new FlowLayout());
+		settingPanel.add(color);
+		settingPanel.add(save);
+		settings.add(settingPanel);
+
+		settings.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		settings.setVisible(true);
+		settings.setSize(500, 500);
+	}
+
 	public void register() {
 		final JFrame register = new JFrame();
 		JPanel registerPanel = new JPanel();
@@ -219,8 +263,8 @@ public class SubMenu extends JFrame {
 		securityQuestions.addItem("Where did you attend your first school?");
 		securityQuestions.addItem("Which city you were born in?");
 		final JLabel secQA = new JLabel("Security Answer");
-		JLabel usernameNA = new JLabel("Sorry! Username not available");
-		JLabel pwdMismatch = new JLabel("Sorry! Passwords do not match");
+		final JLabel usernameNA = new JLabel("Sorry! Username not available");
+		final JLabel pwdMismatch = new JLabel("Sorry! Passwords do not match");
 
 		registerButton.addActionListener(new ActionListener() {
 			@Override
@@ -291,9 +335,9 @@ public class SubMenu extends JFrame {
 		final JTextField secAInput = new JTextField(15);
 		JLabel name = new JLabel("Username: ");
 		final JLabel usernameNA = new JLabel("Sorry! Username not found");
-		JLabel secQLabel = new JLabel();
+		final JLabel secQLabel = new JLabel();
 		final JLabel pwd = new JLabel("Your password: ");
-		JLabel password = new JLabel();
+		final JLabel password = new JLabel();
 
 		next.addActionListener(new ActionListener() {
 			@Override
