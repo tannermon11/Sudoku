@@ -116,6 +116,44 @@ public class SudokuGUI extends JFrame {
 					System.out.println(notesEnabled);
 				}
 		});
+		
+		hints.addActionListener(new ActionListener() 
+		{
+        	 	@Override
+        		public void actionPerformed(ActionEvent e) 
+        		{
+                		if (rating <= 20)
+                		{
+	        	            	Object mySource = e.getSource();
+        	        	    	for (int x = 0; x < 9; x++) 
+        	        	    	{
+						for (int y = 0; y < 9; y++) 
+						{
+                            				if(mySource == textFields[x][y])
+                            				{
+			                                	textFields[x][y].setText(si.getSolution(x,y));
+                        				}
+                        			}	
+                    			}
+                		}
+                		else
+                		{
+        	            		for (int x = 0; x < 9; x++)
+                	    		{
+                        			for (int y = 0; y < 9; y++)
+                        			{
+                            				if (textFields[x][y] != null && textFields[x][y].getText().length() < 2)
+                            				{
+                                				if (!(textFields[x][y].getText().equals(si.getSolution(x,y))))
+                                				{	
+                                    					textFields[x][y].setForeground(Color.RED);
+                                				}
+                            				}
+                        			}
+                    			}
+                		}
+        		}
+        	});
 		switch (difficulty) {
 		case "Easy":
 			rating = 10;
