@@ -117,61 +117,60 @@ public class SudokuGUI extends JFrame {
 		});
 
 		hints.addActionListener(new ActionListener() {
-									@Override
-									public void actionPerformed(ActionEvent e) {
-										hintsEnabled = false;
-										if (rating <= 20) {
-											for (int x = 0; x < 9; x++) {
-												for (int y = 0; y < 9; y++) {
-													final int finalX = x;
-													final int finalY = y;
-													textFields[x][y].addFocusListener(new FocusListener() {
-														@Override
-														public void focusGained(FocusEvent e) {
-															System.out.println(finalX + " : " + finalY);
-															if (!hintsEnabled) {
-																solveAids += 15;
-																textFields[finalX][finalY].setText(si.getSolution(finalY, finalX));
-																hintsEnabled = true;
-															}
-														}
-
-														@Override
-														public void focusLost(FocusEvent e) {
-															System.out.println("fL: " + finalX + " : " + finalY);
-														}
-													});
-												}
-											}
-										} else {
-											for (int x = 0; x < 9; x++) {
-												for (int y = 0; y < 9; y++) {
-													final int finalX = x;
-													final int finalY = y;
-													textFields[x][y].addFocusListener(new FocusListener() {
-														@Override
-														public void focusGained(FocusEvent e) {
-															System.out.println(finalX + " : " + finalY);
-															if (!hintsEnabled) {
-																solveAids += 15;
-																if (!textFields[finalX][finalY].getText().equals(si.getSolution(finalY, finalX)))
-																	textFields[finalX][finalY].setForeground(Color.red);
-																hintsEnabled = true;
-															}
-														}
-
-														@Override
-														public void focusLost(FocusEvent e) {
-															textFields[finalX][finalY].setForeground(Color.blue);
-															System.out.println("fL: " + finalX + " : " + finalY);
-														}
-													});
-												}
-											}
-										}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				hintsEnabled = false;
+				if (rating <= 20) {
+					for (int x = 0; x < 9; x++) {
+						for (int y = 0; y < 9; y++) {
+							final int finalX = x;
+							final int finalY = y;
+							textFields[x][y].addFocusListener(new FocusListener() {
+								@Override
+								public void focusGained(FocusEvent e) {
+									System.out.println(finalX + " : " + finalY);
+									if (!hintsEnabled) {
+										solveAids += 15;
+										textFields[finalX][finalY].setText(si.getSolution(finalY, finalX));
+										hintsEnabled = true;
 									}
 								}
-		);
+
+								@Override
+								public void focusLost(FocusEvent e) {
+									System.out.println("fL: " + finalX + " : " + finalY);
+								}
+							});
+						}
+					}
+				} else {
+					for (int x = 0; x < 9; x++) {
+						for (int y = 0; y < 9; y++) {
+							final int finalX = x;
+							final int finalY = y;
+							textFields[x][y].addFocusListener(new FocusListener() {
+								@Override
+								public void focusGained(FocusEvent e) {
+									System.out.println(finalX + " : " + finalY);
+									if (!hintsEnabled) {
+										solveAids += 15;
+										if (!textFields[finalX][finalY].getText().equals(si.getSolution(finalY, finalX)))
+											textFields[finalX][finalY].setForeground(Color.red);
+										hintsEnabled = true;
+									}
+								}
+
+								@Override
+								public void focusLost(FocusEvent e) {
+									textFields[finalX][finalY].setForeground(Color.blue);
+									System.out.println("fL: " + finalX + " : " + finalY);
+								}
+							});
+						}
+					}
+				}
+			}
+		});
 		switch (difficulty) {
 		case "Easy":
 			rating = 10;
