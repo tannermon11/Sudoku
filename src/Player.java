@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.*;
@@ -86,8 +87,10 @@ public class Player implements Comparator<Player> {
 			if (f.exists()) {
 				String username = null;
 				String pwd = null;
-				List<Node> user = getUserNode(url, false);
-				if (user != null) {
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+				List<Node> user = getUserNode(false, doc);
+				if (user != null && !user.isEmpty()) {
 					NodeList children = user.get(0).getChildNodes();
 					for (int i = 0; i < children.getLength(); i++) {
 						Node node = children.item(i);
@@ -118,29 +121,23 @@ public class Player implements Comparator<Player> {
 		if (url != null) {
 			File f = new File(url.getPath());
 			if (f.exists()) {
-				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-				Document doc = dbf.newDocumentBuilder().parse(url.getPath());
-
-				NodeList elemNodeList = doc.getElementsByTagName("user");
 				Player player = new Player();
 				player.setUsername(this.username);
-
-				for (int j = 0; j < elemNodeList.getLength(); j++) {
-					Node user = elemNodeList.item(j);
-					Node usrname = user.getFirstChild();
-					if (usrname.getFirstChild().getNodeValue().equals(this.username)) {
-						NodeList children = user.getChildNodes();
-						for (int i = 0; i < children.getLength(); i++) {
-							Node node = children.item(i);
-							if (node.getNodeName().equals("question")) {
-								player.setSecretQuestion(node.getFirstChild().getNodeValue());
-							}
-							if (node.getNodeName().equals("answer")) {
-								player.setSecurityAnswer(node.getFirstChild().getNodeValue());
-							}
-							if (node.getNodeName().equals("password")) {
-								player.setPassword(node.getFirstChild().getNodeValue());
-							}
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+				List<Node> user = getUserNode(false, doc);
+				if (user != null && !user.isEmpty()) {
+					NodeList children = user.get(0).getChildNodes();
+					for (int i = 0; i < children.getLength(); i++) {
+						Node node = children.item(i);
+						if (node.getNodeName().equals("question")) {
+							player.setSecretQuestion(node.getFirstChild().getNodeValue());
+						}
+						if (node.getNodeName().equals("answer")) {
+							player.setSecurityAnswer(node.getFirstChild().getNodeValue());
+						}
+						if (node.getNodeName().equals("password")) {
+							player.setPassword(node.getFirstChild().getNodeValue());
 						}
 					}
 				}
@@ -195,7 +192,7 @@ public class Player implements Comparator<Player> {
 		secAElement.appendChild(document.createTextNode(answer));
 		user.appendChild(secAElement);
 
-		// security answer elements
+		// score elements
 		Element scoreElement = document.createElement("score");
 		scoreElement.appendChild(document.createTextNode(score));
 		user.appendChild(scoreElement);
@@ -210,29 +207,35 @@ public class Player implements Comparator<Player> {
 		transformer.transform(domSource, streamResult);
 	}
 
-	public List<Node> getUserNode(URL url, boolean all) throws SAXException, IOException, ParserConfigurationException {
-
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+	public List<Node> getUserNode(boolean all, Document doc) throws SAXException, IOException,
+			ParserConfigurationException {
 
 		NodeList elemNodeList = doc.getElementsByTagName("user");
 		List<Node> users = new ArrayList<Node>();
 
-		for (int j = 0; j < elemNodeList.getLength(); j++) {
-			Node user = elemNodeList.item(j);
-			Node usrname = user.getFirstChild();
-			if (usrname.getFirstChild().getNodeValue().equals(this.username) && !all) {
-				users.add(user);
-				return users;
+		if (elemNodeList != null) {
+			for (int j = 0; j < elemNodeList.getLength(); j++) {
+				Node user = elemNodeList.item(j);
+				Node usrname = user.getFirstChild();
+				if (usrname != null && usrname.getFirstChild() != null
+						&& usrname.getFirstChild().getNodeValue() != null
+						&& usrname.getFirstChild().getNodeValue().equals(this.username) && !all) {
+					users.add(user);
+					return users;
+				}
+				if (all) {
+					users.add(user);
+				}
 			}
-			users.add(user);
 		}
 		return users;
 	}
 
 	public List<Player> getScoreCard() throws SAXException, IOException, ParserConfigurationException {
 		URL url = getClass().getResource(USER_FILE);
-		List<Node> users = getUserNode(url, true);
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+		List<Node> users = getUserNode(true, doc);
 		List<Player> players = new ArrayList<Player>();
 		String username = null;
 		String score = null;
@@ -284,14 +287,22 @@ public class Player implements Comparator<Player> {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		Document doc = dbf.newDocumentBuilder().parse(url.getPath());
 
-		List<Node> user = getUserNode(url, false);
-		if (user != null) {
-			NodeList children = user.get(0).getChildNodes();
+		List<Node> users = getUserNode(false, doc);
+		if (users != null) {
+			Node user = users.get(0);
+			NodeList children = user.getChildNodes();
 			for (int i = 0; i < children.getLength(); i++) {
 				Node node = children.item(i);
 				if (node.getNodeName().equals("score")) {
-					int totalScore = Integer.parseInt(score) + Integer.parseInt(this.getScore());
-					node.getFirstChild().setNodeValue(totalScore + "");
+					String earlierScore = node.getFirstChild().getTextContent();
+					int early = Integer.parseInt(earlierScore);
+					if (this.getScore() != null) {
+						int current = Integer.parseInt(this.getScore());
+						int totalScore = current + early;
+						node.getFirstChild().setTextContent(totalScore + "");
+						node.getFirstChild().setNodeValue(totalScore + "");
+						break;
+					}
 				}
 			}
 		}
@@ -303,7 +314,7 @@ public class Player implements Comparator<Player> {
 		StreamResult streamResult = new StreamResult(f);
 		transformer.transform(domSource, streamResult);
 	}
-	
+
 	// things to do score set properly to db
 	// score set properly after game
 }

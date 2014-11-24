@@ -132,7 +132,7 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e)
             {
                 frame.dispose();
-                new SubMenu().profile();
+                SubMenu.profile();
             }
         });
         

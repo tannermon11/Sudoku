@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
-
 import org.xml.sax.SAXException;
 
 import java.awt.*;
@@ -77,7 +75,7 @@ public class SubMenu extends JFrame {
 		JButton goToMainScreen = new JButton("Back to Main Screen");
 		final JTextField nameInput = new JTextField(7);
 		final JPasswordField passwordInput = new JPasswordField(7);
-		JLabel name = new JLabel("Name: ");
+		JLabel name = new JLabel("Username: ");
 		JLabel pass = new JLabel("Password: ");
 		final JLabel loginFailed = new JLabel("Login failed. Please check your username or password");
 		loginFailed.setVisible(false);
@@ -137,7 +135,7 @@ public class SubMenu extends JFrame {
 		login.setSize(500, 500);
 	}
 
-	public void profile() {
+	public static void profile() {
 		final JFrame profile = new JFrame(player.getUsername() + "'s Profile");
 		JPanel statistics, buttons;
 		JLabel statsLabel = new JLabel("Statistics");
@@ -203,7 +201,7 @@ public class SubMenu extends JFrame {
 		profile.setSize(500, 500);
 	}
 
-	public void settings() {
+	public static void settings() {
 		final JFrame settings = new JFrame("Profile Settings");
 		JPanel settingPanel = new JPanel();
 		JButton save = new JButton("Save settings");
@@ -335,6 +333,7 @@ public class SubMenu extends JFrame {
 		final JTextField secAInput = new JTextField(15);
 		JLabel name = new JLabel("Username: ");
 		final JLabel usernameNA = new JLabel("Sorry! Username not found");
+		final JLabel wrongAnswer = new JLabel("Sorry! Wrong Answer");
 		final JLabel secQLabel = new JLabel();
 		final JLabel pwd = new JLabel("Your password: ");
 		final JLabel password = new JLabel();
@@ -369,8 +368,11 @@ public class SubMenu extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(secAInput.getText().equals(player.getSecurityAnswer())) {
 					pwd.setVisible(true);
+					wrongAnswer.setVisible(false);
 					password.setText(player.getPassword());
 					password.setVisible(true);
+				} else {
+					wrongAnswer.setVisible(true);
 				}
 			}
 		});
@@ -399,6 +401,8 @@ public class SubMenu extends JFrame {
 		password.setVisible(false);
 		forgotPwdPanel.add(usernameNA);
 		usernameNA.setVisible(false);
+		forgotPwdPanel.add(wrongAnswer);
+		wrongAnswer.setVisible(false);
 		forgotPwdPanel.add(goToMainScreen);
 		forgot.add(forgotPwdPanel);
 
