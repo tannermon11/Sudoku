@@ -12,27 +12,44 @@ import java.util.Random;
  * To change this template use File | Settings | File Templates.
  */
 public class SudokuImporter {
-    static String difficulty = "";
     int[][] grid = new int[9][9];
     int[][] solutionGrid = new int[9][9];
     int row, column, number;
     public SudokuImporter() {
         Random rand = new Random();
-        int num = rand.nextInt(3);
-    	URL url = getClass().getResource("test.txt");
-        File file = new File(url.getPath());
+        File[] puzzles = new File[3];
+        URL url = getClass().getResource("easy.txt");
+        puzzles[0] = new File(url.getPath());
         url = getClass().getResource("solution.txt");
         File solution = new File(url.getPath());
+        int num = rand.nextInt(2);
+        int difficulty = 0;
         BufferedReader reader = null;
+        int count = 0;
+        System.out.println(num);
+        if (Menu.difficultyBox.getSelectedItem().toString().contains("Easy"))
+            difficulty = 0;
+        if (Menu.difficultyBox.getSelectedItem().toString().contains("Medium"))
+            difficulty = 1;
+        if (Menu.difficultyBox.getSelectedItem().toString().contains("Hard"))
+            difficulty = 2;
+        if (Menu.difficultyBox.getSelectedItem().toString().contains("Evil"))
+            difficulty = 3;
         try {
-            reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader(new FileReader(puzzles[difficulty]));
             String line;
             while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
                 String[] test = line.split(",");
-                if (line.contains("Difficulty: ")) {
-                    String[] diff = line.split(":");
-                    difficulty = diff[1];
-                } else {
+                if(count != num)
+                {
+                    if(line.contains("/"))
+                    {
+                        count++;
+                    }
+                }
+                else {
+                    if(line.contains("/"))
+                        break;
                     if (line.contains(",")) {
                         row = Integer.parseInt(test[0]);
                         column = Integer.parseInt(test[1]);
@@ -40,24 +57,18 @@ public class SudokuImporter {
                         grid[column][row] = number;
                         System.out.println("Row: " + row + " Column: " + column + " Number: " + number +
                                 " Difficulty: " + difficulty);
-
                     }
                 }
             }
             reader = new BufferedReader(new FileReader(solution));
             while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
                 String[] test = line.split(",");
-                if (line.contains("Difficulty: ")) {
-                    String[] diff = line.split(":");
-                    difficulty = diff[1];
-                } else {
-                    if (line.contains(",")) {
-                        row = Integer.parseInt(test[0]);
-                        column = Integer.parseInt(test[1]);
-                        number = Integer.parseInt(test[2]);
-                        solutionGrid[column][row] = number;
+                if (line.contains(",")) {
+                    row = Integer.parseInt(test[0]);
+                    column = Integer.parseInt(test[1]);
+                    number = Integer.parseInt(test[2]);
+                    solutionGrid[column][row] = number;
 
-                    }
                 }
             }
         } catch (Exception e) {

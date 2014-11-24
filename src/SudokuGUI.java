@@ -23,7 +23,6 @@ public class SudokuGUI extends JFrame {
 	static int score;
 	static int minutes_elapsed = 0, seconds_elapsed = 0;
 	boolean pauseEnabled, notesEnabled, hintsEnabled;
-	Font font1, font2;
 	SudokuImporter si = new SudokuImporter();
 
 	public SudokuGUI() {
@@ -118,7 +117,6 @@ public class SudokuGUI extends JFrame {
 		});
 
 		hints.addActionListener(new ActionListener() {
-
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										hintsEnabled = false;
@@ -131,7 +129,7 @@ public class SudokuGUI extends JFrame {
 														@Override
 														public void focusGained(FocusEvent e) {
 															System.out.println(finalX + " : " + finalY);
-															if(!hintsEnabled) {
+															if (!hintsEnabled) {
 																solveAids += 15;
 																textFields[finalX][finalY].setText(si.getSolution(finalY, finalX));
 																hintsEnabled = true;
@@ -154,9 +152,9 @@ public class SudokuGUI extends JFrame {
 														@Override
 														public void focusGained(FocusEvent e) {
 															System.out.println(finalX + " : " + finalY);
-															if(!hintsEnabled) {
+															if (!hintsEnabled) {
 																solveAids += 15;
-																if(!textFields[finalX][finalY].getText().equals(si.getSolution(finalY, finalX)))
+																if (!textFields[finalX][finalY].getText().equals(si.getSolution(finalY, finalX)))
 																	textFields[finalX][finalY].setForeground(Color.red);
 																hintsEnabled = true;
 															}
