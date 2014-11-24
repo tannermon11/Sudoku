@@ -26,7 +26,7 @@ public class SudokuGUI extends JFrame {
 	SudokuImporter si = new SudokuImporter();
 
 	public SudokuGUI() {
-		String difficulty = Menu.difficultyBox.getSelectedItem().toString();
+		final String difficulty = Menu.difficultyBox.getSelectedItem().toString();
 		frame = new JFrame("Sudoku");
 		for (int i = 0; i < panel.length; i++) {
 			panel[i] = new JPanel();
@@ -92,6 +92,12 @@ public class SudokuGUI extends JFrame {
 		end.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				for (int x = 0; x < Sudoku.GRID_SIZE; x++) {
+					for (int y = 0; y < Sudoku.GRID_SIZE; y++) {
+						if(textFields[x][y].getText().length() == 0)
+							Accuracy += 60;
+					}
+				}
 				setScore();
 				System.out.println("Score in end listener: " + score);
 				minutes_elapsed = 0;
@@ -249,6 +255,8 @@ public class SudokuGUI extends JFrame {
 	public static void setScore() {
 		timeBonus = 3000 - (minutes_elapsed * 60 + seconds_elapsed);
 		score = rating + timeBonus - Accuracy - solveAids;
+		if(score < 0) score = 0;
+		rateLabel.setText("Score: " + String.valueOf(score));
 		if (SubMenu.player.getUsername() != null) {
 			String totalScore = SubMenu.player.getScore();
 			if (totalScore != null) {
@@ -269,7 +277,6 @@ public class SudokuGUI extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					time.setText("Time: " + String.format("%02d:%02d", minutes_elapsed, seconds_elapsed));
 					setScore();
-					rateLabel.setText("Score: " + String.valueOf(score));
 					seconds_elapsed++;
 					if (seconds_elapsed == 60) {
 						seconds_elapsed = 0;
