@@ -22,7 +22,7 @@ public class SudokuGUI extends JFrame {
 	static int rating, timeBonus, Accuracy, solveAids;
 	static int score;
 	static int minutes_elapsed = 0, seconds_elapsed = 0;
-	boolean pauseEnabled, notesEnabled;
+	boolean pauseEnabled, notesEnabled, hintsEnabled;
 	Font font1, font2;
 	SudokuImporter si = new SudokuImporter();
 
@@ -116,44 +116,64 @@ public class SudokuGUI extends JFrame {
 					System.out.println(notesEnabled);
 				}
 		});
-		
-		hints.addActionListener(new ActionListener() 
-		{
-        	 	@Override
-        		public void actionPerformed(ActionEvent e) 
-        		{
-                		if (rating <= 20)
-                		{
-	        	            	Object mySource = e.getSource();
-        	        	    	for (int x = 0; x < 9; x++) 
-        	        	    	{
-						for (int y = 0; y < 9; y++) 
-						{
-                            				if(mySource == textFields[x][y])
-                            				{
-			                                	textFields[x][y].setText(si.getSolution(x,y));
-                        				}
-                        			}	
-                    			}
-                		}
-                		else
-                		{
-        	            		for (int x = 0; x < 9; x++)
-                	    		{
-                        			for (int y = 0; y < 9; y++)
-                        			{
-                            				if (textFields[x][y] != null && textFields[x][y].getText().length() < 2)
-                            				{
-                                				if (!(textFields[x][y].getText().equals(si.getSolution(x,y))))
-                                				{	
-                                    					textFields[x][y].setForeground(Color.RED);
-                                				}
-                            				}
-                        			}
-                    			}
-                		}
-        		}
-        	});
+
+		hints.addActionListener(new ActionListener() {
+
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										hintsEnabled = false;
+										if (rating <= 20) {
+											for (int x = 0; x < 9; x++) {
+												for (int y = 0; y < 9; y++) {
+													final int finalX = x;
+													final int finalY = y;
+													textFields[x][y].addFocusListener(new FocusListener() {
+														@Override
+														public void focusGained(FocusEvent e) {
+															System.out.println(finalX + " : " + finalY);
+															if(!hintsEnabled) {
+																solveAids += 15;
+																textFields[finalX][finalY].setText(si.getSolution(finalY, finalX));
+																hintsEnabled = true;
+															}
+														}
+
+														@Override
+														public void focusLost(FocusEvent e) {
+															System.out.println("fL: " + finalX + " : " + finalY);
+														}
+													});
+												}
+											}
+										} else {
+											for (int x = 0; x < 9; x++) {
+												for (int y = 0; y < 9; y++) {
+													final int finalX = x;
+													final int finalY = y;
+													textFields[x][y].addFocusListener(new FocusListener() {
+														@Override
+														public void focusGained(FocusEvent e) {
+															System.out.println(finalX + " : " + finalY);
+															if(!hintsEnabled) {
+																solveAids += 15;
+																if(!textFields[finalX][finalY].getText().equals(si.getSolution(finalY, finalX)))
+																	textFields[finalX][finalY].setForeground(Color.red);
+																hintsEnabled = true;
+															}
+														}
+
+														@Override
+														public void focusLost(FocusEvent e) {
+															textFields[finalX][finalY].setForeground(Color.blue);
+															System.out.println("fL: " + finalX + " : " + finalY);
+														}
+													});
+												}
+											}
+										}
+									}
+								}
+		);
 		switch (difficulty) {
 		case "Easy":
 			rating = 10;
@@ -207,7 +227,9 @@ public class SudokuGUI extends JFrame {
 
 				if(SubMenu.modeColor) {
 					textFields[x][y].setBackground(Color.black);
-					textFields[x][y].setForeground(Color.BLUE); //Initial numbers on board
+					if(String.valueOf(si.getNumber(y, x)).equalsIgnoreCase("0")) {
+						textFields[x][y].setForeground(Color.CYAN);
+					}
 				}
 			}
 		}
@@ -388,7 +410,7 @@ public class SudokuGUI extends JFrame {
 
 		public void checkAccuracy(String num, int x, int y) {
 			if (!si.getSolution(y, x).equals(num) && !notesEnabled)
-				Accuracy += 50;
+				Accuracy += 30;
 			System.out.println(x + ":" + y);
 		}
 	}

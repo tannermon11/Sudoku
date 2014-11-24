@@ -17,33 +17,22 @@ public class SudokuImporter {
     int[][] solutionGrid = new int[9][9];
     int row, column, number;
     public SudokuImporter() {
+        Random rand = new Random();
+        int num = rand.nextInt(3);
     	URL url = getClass().getResource("test.txt");
         File file = new File(url.getPath());
         url = getClass().getResource("solution.txt");
         File solution = new File(url.getPath());
-        int num = rand.nextInt(2);
         BufferedReader reader = null;
-  	int count = 0;
-  	system.out.println(num);
         try {
             reader = new BufferedReader(new FileReader(file));
-
             String line;
             while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
                 String[] test = line.split(",");
-                if (line.contains("Difficulty: ")) 
-                {
+                if (line.contains("Difficulty: ")) {
                     String[] diff = line.split(":");
                     difficulty = diff[1];
-                }
-             	else if(count != num)
-               	{
-                	if(line.contains("/");
-                	{
-                		count ++;
-                	}
-                }
-                else {
+                } else {
                     if (line.contains(",")) {
                         row = Integer.parseInt(test[0]);
                         column = Integer.parseInt(test[1]);
