@@ -26,7 +26,7 @@ public class SudokuGUI extends JFrame {
 	SudokuImporter si = new SudokuImporter();
 
 	public SudokuGUI() {
-		final String difficulty = Menu.difficultyBox.getSelectedItem().toString();
+		String difficulty = Menu.difficultyBox.getSelectedItem().toString();
 		frame = new JFrame("Sudoku");
 		for (int i = 0; i < panel.length; i++) {
 			panel[i] = new JPanel();

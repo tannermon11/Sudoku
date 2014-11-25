@@ -20,22 +20,20 @@ public class SudokuImporter {
         Random rand = new Random();
         File[] puzzles = new File[4];
         File[] solutions = new File[4];
-        URL url = getClass().getResource("easy.txt");
-        puzzles[0] = new File(url.getPath());
-        url = getClass().getResource("medium.txt");
-        puzzles[1] = new File(url.getPath());
-        url = getClass().getResource("hard.txt");
-        puzzles[2] = new File(url.getPath());
-        url = getClass().getResource("evil.txt");
-        puzzles[3] = new File(url.getPath());
-        url = getClass().getResource("easySol.txt");
-        solutions[0] = new File(url.getPath());
-        url = getClass().getResource("mediumSol.txt");
-        solutions[1] = new File(url.getPath());
-        url = getClass().getResource("hardSol.txt");
-        solutions[2] = new File(url.getPath());
-        url = getClass().getResource("evilSol.txt");
-        solutions[3] = new File(url.getPath());
+        String[] txtFiles = {"easy.txt", "medium.txt", "hard.txt", "evil.txt"};
+        String[] solutionTxtFiles = {"easySol.txt", "mediumSol.txt", "hardSol.txt", "evilSol.txt"};
+        URL url;
+        for(int i=0; i<puzzles.length; i++) {
+            url = getClass().getResource(txtFiles[i]);
+            if(url!=null) {
+                puzzles[i] = new File(url.getPath());
+            }
+        }
+        for(int i=0; i<solutions.length; i++) {
+            url = getClass().getResource(solutionTxtFiles[i]);
+            if(url != null)
+            solutions[i] = new File(url.getPath());
+        }
         int num = rand.nextInt(2);
         int difficulty = 0;
         BufferedReader reader = null;
