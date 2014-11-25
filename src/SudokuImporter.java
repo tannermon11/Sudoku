@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 
-
 /**
  * User: Tanner
  * Date: 11/7/2014
@@ -25,16 +24,15 @@ public class SudokuImporter {
         URL url;
         for(int i=0; i<puzzles.length; i++) {
             url = getClass().getResource(txtFiles[i]);
-            if(url!=null) {
+            if(url!=null)
                 puzzles[i] = new File(url.getPath());
-            }
         }
         for(int i=0; i<solutions.length; i++) {
             url = getClass().getResource(solutionTxtFiles[i]);
             if(url != null)
             solutions[i] = new File(url.getPath());
         }
-        int num = rand.nextInt(2);
+        int num = rand.nextInt(3);
         int difficulty = 0;
         BufferedReader reader = null;
         int count = 0;
@@ -50,7 +48,7 @@ public class SudokuImporter {
         try {
             reader = new BufferedReader(new FileReader(puzzles[difficulty]));
             String line;
-            while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
+            while ((line = reader.readLine()) != null) {
                 String[] test = line.split(",");
                 if(count != num)
                 {
@@ -74,25 +72,25 @@ public class SudokuImporter {
             }
             reader = new BufferedReader(new FileReader(solutions[difficulty]));
             count = 0;
-            while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
+            while ((line = reader.readLine()) != null) {
                 String[] test = line.split(",");
-                if (count != difficulty)
+                if (count != num)
                 {
                     if(line.contains("/"))
                     {
                         count ++;
                     }
                 }
-                else if (line.contains(",")) {
-                    if (line.contains("/"))
-                    {
+                else {
+                    if (line.contains("/")) {
                         break;
                     }
-                    row = Integer.parseInt(test[0]);
-                    column = Integer.parseInt(test[1]);
-                    number = Integer.parseInt(test[2]);
-                    solutionGrid[column][row] = number;
-
+                    else if (line.contains(",")) {
+                        row = Integer.parseInt(test[0]);
+                        column = Integer.parseInt(test[1]);
+                        number = Integer.parseInt(test[2]);
+                        solutionGrid[column][row] = number;
+                    }
                 }
             }
         } catch (Exception e) {
