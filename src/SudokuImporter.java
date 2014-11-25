@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 
+
 /**
  * User: Tanner
  * Date: 11/7/2014
@@ -17,11 +18,24 @@ public class SudokuImporter {
     int row, column, number;
     public SudokuImporter() {
         Random rand = new Random();
-        File[] puzzles = new File[3];
+        File[] puzzles = new File[4];
+        File[] solutions = new File[4];
         URL url = getClass().getResource("easy.txt");
         puzzles[0] = new File(url.getPath());
-        url = getClass().getResource("solution.txt");
-        File solution = new File(url.getPath());
+        url = getClass().getResource("medium.txt");
+        puzzles[1] = new File(url.getPath());
+        url = getClass().getResource("hard.txt");
+        puzzles[2] = new File(url.getPath());
+        url = getClass().getResource("evil.txt");
+        puzzles[3] = new File(url.getPath());
+        url = getClass().getResource("easySol.txt");
+        solutions[0] = new File(url.getPath());
+        url = getClass().getResource("mediumSol.txt");
+        solutions[1] = new File(url.getPath());
+        url = getClass().getResource("hardSol.txt");
+        solutions[2] = new File(url.getPath());
+        url = getClass().getResource("evilSol.txt");
+        solutions[3] = new File(url.getPath());
         int num = rand.nextInt(2);
         int difficulty = 0;
         BufferedReader reader = null;
@@ -60,10 +74,22 @@ public class SudokuImporter {
                     }
                 }
             }
-            reader = new BufferedReader(new FileReader(solution));
+            reader = new BufferedReader(new FileReader(solutions[difficulty]));
+            count = 0;
             while ((line = reader.readLine()) != null) {// && !line.contains("Time:")) {
                 String[] test = line.split(",");
-                if (line.contains(",")) {
+                if (count != difficulty)
+                {
+                    if(line.contains("/"))
+                    {
+                        count ++;
+                    }
+                }
+                else if (line.contains(",")) {
+                    if (line.contains("/"))
+                    {
+                        break;
+                    }
                     row = Integer.parseInt(test[0]);
                     column = Integer.parseInt(test[1]);
                     number = Integer.parseInt(test[2]);
