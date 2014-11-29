@@ -12,7 +12,7 @@ import java.io.IOException;
  * User: Tanner Date: 11/3/2014 Time: 2:02 PM To change this template use File |
  * Settings | File Templates. Update by: Santhosh
  */
-public class SubMenu extends JFrame {
+public class UserLoginRegisterMenu extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	public static JFrame subFrame;
@@ -21,7 +21,7 @@ public class SubMenu extends JFrame {
 	public static Player player = new Player();
 	public static boolean modeColor = false;
 
-	public SubMenu() {
+	public UserLoginRegisterMenu() {
 		subPanel = new JPanel();
 		subFrame = new JFrame();
 		JButton login = new JButton("Login");
@@ -53,8 +53,9 @@ public class SubMenu extends JFrame {
 		guest.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				UserLoginRegisterMenu.player.setUsername(null);
 				subFrame.dispose();
-				new Menu();
+				new DashBoardMenu();
 				/*
 				 * SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
 				 * mcl.createAndShowGUI();
@@ -116,7 +117,7 @@ public class SubMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				login.dispose();
-				new SubMenu();
+				new UserLoginRegisterMenu();
 			}
 		});
 
@@ -151,7 +152,7 @@ public class SubMenu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				profile.dispose();
 				System.out.println(player.getUsername());
-				new Menu();
+				new DashBoardMenu();
 			}
 		});
 
@@ -173,7 +174,7 @@ public class SubMenu extends JFrame {
 						| TransformerException e1) {
 					e1.printStackTrace();
 				}
-				new SubMenu();
+				new UserLoginRegisterMenu();
 			}
 		});
 
@@ -297,7 +298,7 @@ public class SubMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				register.dispose();
-				new SubMenu();
+				new UserLoginRegisterMenu();
 			}
 		});
 
@@ -382,7 +383,7 @@ public class SubMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				forgot.dispose();
-				new SubMenu();
+				new UserLoginRegisterMenu();
 			}
 		});
 

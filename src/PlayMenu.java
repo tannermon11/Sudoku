@@ -11,7 +11,7 @@ import java.awt.event.*;
  * User: Tanner Date: 9/24/2014 Time: 7:40 PM To change this template use File |
  * Settings | File Templates.
  */
-public class SudokuGUI extends JFrame {
+public class PlayMenu extends JFrame {
 	static JFrame frame;
 	JPanel[] panel = new JPanel[9];
 	JPanel bPanel, tPanel, pausePanel;
@@ -25,8 +25,8 @@ public class SudokuGUI extends JFrame {
 	boolean pauseEnabled, notesEnabled, hintsEnabled;
 	SudokuImporter si = new SudokuImporter();
 
-	public SudokuGUI() {
-		String difficulty = Menu.difficultyBox.getSelectedItem().toString();
+	public PlayMenu() {
+		String difficulty = DashBoardMenu.difficultyBox.getSelectedItem().toString();
 		frame = new JFrame("Sudoku");
 		for (int i = 0; i < panel.length; i++) {
 			panel[i] = new JPanel();
@@ -40,7 +40,7 @@ public class SudokuGUI extends JFrame {
 		notes = new JButton("Notes");
 		time = new JLabel();
 		rateLabel = new JLabel();
-		user = new JLabel("User: " + SubMenu.player.getUsername());
+		user = new JLabel("User: " + UserLoginRegisterMenu.player.getUsername());
 		difficultyLabel = new JLabel("Difficulty: " + difficulty);
 		time.setForeground(Color.blue);
 		textFields = new JTextField[Sudoku.GRID_SIZE][Sudoku.GRID_SIZE];
@@ -59,7 +59,7 @@ public class SudokuGUI extends JFrame {
 		tPanel.add(time);
 		tPanel.add(rateLabel);
 		tPanel.add(user);
-		if (SubMenu.player.getUsername() == null) {
+		if (UserLoginRegisterMenu.player.getUsername() == null) {
 			user.setVisible(false);
 		}
 		tPanel.add(difficultyLabel);
@@ -103,7 +103,7 @@ public class SudokuGUI extends JFrame {
 				minutes_elapsed = 0;
 				seconds_elapsed = 0;
 				timer.stop();
-				Menu.frame.setVisible(true);
+				DashBoardMenu.frame.setVisible(true);
 				displaySolution();
 				frame.dispose();
 			}
@@ -228,7 +228,7 @@ public class SudokuGUI extends JFrame {
 				if (x >= 6 && y >= 6)
 					panel[8].add(textFields[x][y]);
 
-				if(SubMenu.modeColor) {
+				if(UserLoginRegisterMenu.modeColor) {
 					textFields[x][y].setBackground(Color.black);
 					if(String.valueOf(si.getNumber(y, x)).equalsIgnoreCase("0")) {
 						textFields[x][y].setForeground(Color.CYAN);
@@ -238,7 +238,7 @@ public class SudokuGUI extends JFrame {
 		}
 
 		for (JPanel aPanel : panel) {
-			if(SubMenu.modeColor)
+			if(UserLoginRegisterMenu.modeColor)
 				aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white));
 			else
 				aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
@@ -257,15 +257,15 @@ public class SudokuGUI extends JFrame {
 		score = rating + timeBonus - Accuracy - solveAids;
 		if(score < 0) score = 0;
 		rateLabel.setText("Score: " + String.valueOf(score));
-		if (SubMenu.player.getUsername() != null) {
-			String totalScore = SubMenu.player.getScore();
+		if (UserLoginRegisterMenu.player.getUsername() != null) {
+			String totalScore = UserLoginRegisterMenu.player.getScore();
 			if (totalScore != null) {
-				SubMenu.player.setScore(score + Integer.parseInt(totalScore) + ""); // add
+				UserLoginRegisterMenu.player.setScore(score + Integer.parseInt(totalScore) + ""); // add
 				// up
 				// all
 				// scores
 			} else {
-				SubMenu.player.setScore(score + "");
+				UserLoginRegisterMenu.player.setScore(score + "");
 			}
 		}
 	}
@@ -318,7 +318,7 @@ public class SudokuGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				solution.dispose();
-				new Menu();
+				new DashBoardMenu();
 			}
 		});
 

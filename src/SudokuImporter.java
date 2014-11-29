@@ -37,13 +37,13 @@ public class SudokuImporter {
         BufferedReader reader = null;
         int count = 0;
         System.out.println(num);
-        if (Menu.difficultyBox.getSelectedItem().toString().contains("Easy"))
+        if (DashBoardMenu.difficultyBox.getSelectedItem().toString().contains("Easy"))
             difficulty = 0;
-        if (Menu.difficultyBox.getSelectedItem().toString().contains("Medium"))
+        if (DashBoardMenu.difficultyBox.getSelectedItem().toString().contains("Medium"))
             difficulty = 1;
-        if (Menu.difficultyBox.getSelectedItem().toString().contains("Hard"))
+        if (DashBoardMenu.difficultyBox.getSelectedItem().toString().contains("Hard"))
             difficulty = 2;
-        if (Menu.difficultyBox.getSelectedItem().toString().contains("Evil"))
+        if (DashBoardMenu.difficultyBox.getSelectedItem().toString().contains("Evil"))
             difficulty = 3;
         try {
             reader = new BufferedReader(new FileReader(puzzles[difficulty]));

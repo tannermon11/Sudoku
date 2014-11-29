@@ -21,8 +21,29 @@ import org.w3c.dom.*;
  */
 public class Player implements Comparator<Player> {
 
-	private String username, password, secretQuestion, securityAnswer, score;
 	private static final String USER_FILE = "Users.xml";
+	
+	private String username, password, secretQuestion, securityAnswer, score;
+	
+	private SavedGame savedGame;
+	
+	private boolean hasSavedGame;
+	
+	public SavedGame getSavedGame() {
+		return savedGame;
+	}
+
+	public void setSavedGame(SavedGame savedGame) {
+		this.savedGame = savedGame;
+	}
+
+	public boolean isHasSavedGame() {
+		return hasSavedGame;
+	}
+
+	public void setHasSavedGame(boolean hasSavedGame) {
+		this.hasSavedGame = hasSavedGame;
+	}
 
 	public String getUsername() {
 		return username;
@@ -306,7 +327,6 @@ public class Player implements Comparator<Player> {
 				}
 			}
 		}
-
 		// save the result
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
@@ -314,7 +334,4 @@ public class Player implements Comparator<Player> {
 		StreamResult streamResult = new StreamResult(f);
 		transformer.transform(domSource, streamResult);
 	}
-
-	// things to do score set properly to db
-	// score set properly after game
 }
