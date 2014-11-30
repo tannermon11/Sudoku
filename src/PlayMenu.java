@@ -103,7 +103,6 @@ public class PlayMenu extends JFrame {
 				minutes_elapsed = 0;
 				seconds_elapsed = 0;
 				timer.stop();
-				DashBoardMenu.frame.setVisible(true);
 				displaySolution();
 				frame.dispose();
 			}
