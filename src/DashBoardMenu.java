@@ -122,8 +122,10 @@ public class DashBoardMenu extends JFrame {
                 {
                     mFrame = new JFrame();
                     mTextArea = new JTextArea();
-                    mPanel = new JPanel();
+                    mPanel = new JPanel(new BorderLayout());
                     back = new JButton("Back to Dashboard");
+                    JScrollPane scrollPane = new JScrollPane(mTextArea);
+					scrollPane.setViewportView(mTextArea);
 
                     try {
                         fr = new FileReader(manualFile);
@@ -134,9 +136,11 @@ public class DashBoardMenu extends JFrame {
                     } catch (IOException ex) {
                         System.out.println("Your manual is missing.");
                     }
+					mTextArea.setLineWrap(true);
+					mTextArea.setWrapStyleWord(true);
+					mPanel.add(scrollPane, BorderLayout.CENTER);
+					mPanel.add(back, BorderLayout.SOUTH);
 
-                    mPanel.add(mTextArea);
-                    mPanel.add(back);
                     back.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
