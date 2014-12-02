@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXException;
 
 import java.awt.*;
@@ -206,6 +207,8 @@ public class UserLoginRegisterMenu extends JFrame {
 		final JFrame settings = new JFrame("Profile Settings");
 		JPanel settingPanel = new JPanel();
 		JButton save = new JButton("Save settings");
+		JButton goToMainScreen = new JButton("Back to Main Screen");
+		JLabel savedSettingMessage = new JLabel("Background color changed");
 		@SuppressWarnings("unchecked")
 		final JComboBox color = new JComboBox(new String[]{"White background / Black lines",
 				"Black background / White lines"});
@@ -227,7 +230,24 @@ public class UserLoginRegisterMenu extends JFrame {
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
-			{
+			{	
+				savedSettingMessage.setVisible(true);
+				Timer t = new Timer(2000, new ActionListener() {
+
+		            @Override
+		            public void actionPerformed(ActionEvent e) {
+						savedSettingMessage.setVisible(false);
+		            }
+		        });
+				t.start();
+			}
+		});
+		
+		goToMainScreen.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{	
 				settings.dispose();
 				profile();
 			}
@@ -236,6 +256,9 @@ public class UserLoginRegisterMenu extends JFrame {
 		settingPanel.setLayout(new FlowLayout());
 		settingPanel.add(color);
 		settingPanel.add(save);
+		settingPanel.add(savedSettingMessage);
+		settingPanel.add(goToMainScreen);		
+		savedSettingMessage.setVisible(false);
 		settings.add(settingPanel);
 
 		settings.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -348,8 +371,6 @@ public class UserLoginRegisterMenu extends JFrame {
 						player = player.getSecurityQA();
 						if (player != null) {
 							secQLabel.setText(player.getSecretQuestion());
-							// Tanner: want to set the Sec Question to secQLabel
-							// (player.getSecurityQuestion())
 							secQLabel.setVisible(true);
 							secAInput.setVisible(true);
 							showPassword.setVisible(true);
@@ -373,6 +394,8 @@ public class UserLoginRegisterMenu extends JFrame {
 					password.setText(player.getPassword());
 					password.setVisible(true);
 				} else {
+					pwd.setVisible(false);
+					password.setVisible(false);
 					wrongAnswer.setVisible(true);
 				}
 			}

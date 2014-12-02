@@ -23,11 +23,20 @@ public class Player implements Comparator<Player> {
 
 	private static final String USER_FILE = "Users.xml";
 	
-	private String username, password, secretQuestion, securityAnswer, score;
+	private String username, password, secretQuestion, securityAnswer, score, completedMode;
 	
 	private SavedGame savedGame;
 	
 	private boolean hasSavedGame;
+	
+	public String getCompletedMode() {
+		return completedMode;
+	}
+
+	public void setCompletedMode(String completedMode) {
+		this.completedMode = completedMode;
+	}
+
 	
 	public SavedGame getSavedGame() {
 		return savedGame;
