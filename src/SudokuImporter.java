@@ -12,31 +12,30 @@ import java.util.Random;
  * To change this template use File | Settings | File Templates.
  */
 public class SudokuImporter {
-    int[][] grid = new int[9][9];
-    int[][] solutionGrid = new int[9][9];
-    int row, column, number;
-    public SudokuImporter() {
-        Random rand = new Random();
+    static int[][] grid = new int[9][9];
+    static int[][] solutionGrid = new int[9][9];
+    int row, column, number, puzzleNum;
+    Random rand = new Random();
+
+    public SudokuImporter(boolean load) {
         File[] puzzles = new File[4];
         File[] solutions = new File[4];
         String[] txtFiles = {"easy.txt", "medium.txt", "hard.txt", "evil.txt"};
         String[] solutionTxtFiles = {"easySol.txt", "mediumSol.txt", "hardSol.txt", "evilSol.txt"};
         URL url;
-        for(int i=0; i<puzzles.length; i++) {
+        for (int i = 0; i < puzzles.length; i++) {
             url = getClass().getResource(txtFiles[i]);
-            if(url!=null)
+            if (url != null)
                 puzzles[i] = new File(url.getPath());
-        }
-        for(int i=0; i<solutions.length; i++) {
             url = getClass().getResource(solutionTxtFiles[i]);
-            if(url != null)
-            solutions[i] = new File(url.getPath());
+            if (url != null)
+                solutions[i] = new File(url.getPath());
         }
-        int num = rand.nextInt(3);
+        puzzleNum = rand.nextInt(3);
         int difficulty = 0;
         BufferedReader reader = null;
         int count = 0;
-        System.out.println(num);
+        System.out.println(puzzleNum);
         if (DashBoardMenu.difficultyBox.getSelectedItem().toString().contains("Easy"))
             difficulty = 0;
         if (DashBoardMenu.difficultyBox.getSelectedItem().toString().contains("Medium"))
@@ -45,12 +44,14 @@ public class SudokuImporter {
             difficulty = 2;
         if (DashBoardMenu.difficultyBox.getSelectedItem().toString().contains("Evil"))
             difficulty = 3;
+
         try {
             reader = new BufferedReader(new FileReader(puzzles[difficulty]));
             String line;
+            if (load)
             while ((line = reader.readLine()) != null) {
                 String[] test = line.split(",");
-                if(count != num)
+                if(count != puzzleNum)
                 {
                     if(line.contains("/"))
                     {
@@ -72,9 +73,10 @@ public class SudokuImporter {
             }
             reader = new BufferedReader(new FileReader(solutions[difficulty]));
             count = 0;
+            if (load)
             while ((line = reader.readLine()) != null) {
                 String[] test = line.split(",");
-                if (count != num)
+                if (count != puzzleNum)
                 {
                     if(line.contains("/"))
                     {
@@ -105,9 +107,9 @@ public class SudokuImporter {
     }
 
     public int[] getRow(int row) {
-        int [] arr = new int[9];
-        for(int i =0; i<9;i++){
-            arr[i]=grid[i][row];
+        int[] arr = new int[9];
+        for (int i = 0; i < 9; i++) {
+            arr[i] = grid[i][row];
         }
         return arr;
     }

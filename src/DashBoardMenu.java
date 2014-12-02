@@ -22,181 +22,221 @@ import java.util.List;
  */
 
 public class DashBoardMenu extends JFrame {
-	public static JPanel bPanel, mPanel;
-	public static JFrame frame, mFrame, scoreCardFrame;
-	public JButton play, load, highscore, manual, back, goToMainScreen, challenge, challengeAFriend;
-	public static JLabel user;
-	public static JComboBox difficultyBox;
-	public Timer timer = null;
-	int minutes_elapsed = 0, seconds_elapsed = 0;
-	public JTextArea mTextArea;
-	public File manualFile = new File("Manual.txt");
-	public FileReader fr = null;
-	public BufferedReader reader = null;
+    public static JPanel bPanel, mPanel;
+    public static JFrame frame, mFrame, scoreCardFrame;
+    public JButton play, load, highscore, manual, back, goToMainScreen, challenge, challengeAFriend;
+    public static JLabel user;
+    public static JComboBox difficultyBox;
+    public Timer timer = null;
+    int minutes_elapsed = 0, seconds_elapsed = 0;
+    public JTextArea mTextArea;
+    public File manualFile = new File("Manual.txt");
+    public FileReader fr = null;
+    public BufferedReader reader = null;
 
-	public DashBoardMenu() {
-		frame = new JFrame();
-		bPanel = new JPanel();
-		difficultyBox = new JComboBox(new String[] { "Easy", "Medium", "Hard", "Evil" });
-		difficultyBox.setSelectedIndex(0);
+    public DashBoardMenu() {
+        frame = new JFrame();
+        bPanel = new JPanel();
+        difficultyBox = new JComboBox(new String[]{"Easy", "Medium", "Hard", "Evil"});
+        difficultyBox.setSelectedIndex(0);
 
-		user = new JLabel("User: " + UserLoginRegisterMenu.player.getUsername());
-		play = new JButton("Play");
-		load = new JButton("Load");
-		highscore = new JButton("Hall of Fame");
-		manual = new JButton("How-To-Play");
-		back = new JButton("Go to Main Menu");
-		goToMainScreen = new JButton("Back to Main Screen");
+        user = new JLabel("User: " + UserLoginRegisterMenu.player.getUsername());
+        play = new JButton("Play");
+        load = new JButton("Load");
+        highscore = new JButton("Hall of Fame");
+        manual = new JButton("How-To-Play");
+        back = new JButton("Go to Main Menu");
+        goToMainScreen = new JButton("Back to Main Screen");
 
-		difficultyBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(difficultyBox.getSelectedItem());
-			}
-		});
+        difficultyBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(difficultyBox.getSelectedItem());
+            }
+        });
 
-		play.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PlayMenu.startTimer(0, 0);
-				frame.dispose();
-				new PlayMenu();
-				System.out.println("Score play listener: " + String.valueOf(PlayMenu.score));
-				/*
-				 * SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
+        play.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PlayMenu.startTimer(0,0);
+                PlayMenu.seconds_elapsed=0;
+                PlayMenu.minutes_elapsed=0;
+                PlayMenu.score = 3000;
+                PlayMenu.Accuracy = 0;
+                frame.dispose();
+                new PlayMenu(true);
+                System.out.println("Score play listener: " + String.valueOf(PlayMenu.score));
+                /*
+                 * SudokuGUI.myCardLayout mcl = sg.new myCardLayout();
 				 * mcl.createAndShowGUI();
 				 */
-			}
-		});
-		load.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-//				UserLoginRegisterMenu.player.loadGame();
-			}
-		});
+            }
+        });
+        load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PlayMenu.Accuracy = 0;
+                int min = 0, sec = 0, score = 0;
+                BufferedReader br = null;
+                File file = new File(UserLoginRegisterMenu.player.getUsername() + ".txt");
+                try {
+                    br = new BufferedReader(new FileReader(file));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String[] test = line.split(",");
+                        if (line.contains("Time:")) {
+                            String[] timing = line.split(" ");
+                            min = Integer.parseInt(timing[1]);
+                            sec = Integer.parseInt(timing[2]);
+                        } else if (line.contains("Score:")) {
+                            String[] scoring = line.split(" ");
+                            score = Integer.parseInt(scoring[1]);
+                        } else {
+                            int row = Integer.parseInt(test[0]);
+                            int column = Integer.parseInt(test[1]);
+                            if (test.length == 3) {
+                                int number = Integer.parseInt(test[2]);
+                                SudokuImporter.grid[column][row] = number;
+                            }
+                        }
+                    }
+                } catch (IOException io) {
+                    io.printStackTrace();
+                } finally {
+                    try {
+                        br.close();
+                    } catch (IOException io) {
+                        io.printStackTrace();
+                    }
+                }
+                frame.dispose();
+                new PlayMenu(false);
+                PlayMenu.startTimer(min, sec);
+                PlayMenu.score = score;
+            }
+        });
 
-		manual.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				{
-					mFrame = new JFrame();
-					mTextArea = new JTextArea();
-					mPanel = new JPanel();
-					back = new JButton("Back to Dashboard");
+        manual.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                {
+                    mFrame = new JFrame();
+                    mTextArea = new JTextArea();
+                    mPanel = new JPanel();
+                    back = new JButton("Back to Dashboard");
 
-					try {
-						fr = new FileReader(manualFile);
-						reader = new BufferedReader(fr);
-						mTextArea.read(reader, "mTextArea");
-						reader.close();
-						mTextArea.requestFocus();
-					} catch (IOException ex) {
-						System.out.println("Your manual is missing.");
-					}
+                    try {
+                        fr = new FileReader(manualFile);
+                        reader = new BufferedReader(fr);
+                        mTextArea.read(reader, "mTextArea");
+                        reader.close();
+                        mTextArea.requestFocus();
+                    } catch (IOException ex) {
+                        System.out.println("Your manual is missing.");
+                    }
 
-					mPanel.add(mTextArea);
-					mPanel.add(back);
-					back.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							mFrame.dispose();
-						}
-					});
+                    mPanel.add(mTextArea);
+                    mPanel.add(back);
+                    back.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            mFrame.dispose();
+                        }
+                    });
 
-					mFrame.add(mPanel);
-					mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					mFrame.setVisible(true);
-					mFrame.setSize(500, 500);
-				}
-			}
-		});
+                    mFrame.add(mPanel);
+                    mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    mFrame.setVisible(true);
+                    mFrame.setSize(500, 500);
+                }
+            }
+        });
 
-		back.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				UserLoginRegisterMenu.profile();
-			}
-		});
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                UserLoginRegisterMenu.profile();
+            }
+        });
 
-		highscore.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// add to table
-				try {
-					List<Player> players = UserLoginRegisterMenu.player.getScoreCard();
-					scoreBoard(players);
-					frame.dispose();
-				} catch (SAXException | IOException | ParserConfigurationException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
+        highscore.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // add to table
+                try {
+                    List<Player> players = UserLoginRegisterMenu.player.getScoreCard();
+                    scoreBoard(players);
+                    frame.dispose();
+                } catch (SAXException | IOException | ParserConfigurationException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
 
-		goToMainScreen.addActionListener(new ActionListener() {
+        goToMainScreen.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				frame.dispose();
-				new UserLoginRegisterMenu();
-			}
-		});
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                frame.dispose();
+                new UserLoginRegisterMenu();
+            }
+        });
 
-		bPanel.add(user);
-		bPanel.add(difficultyBox);
-		bPanel.add(play);
-		bPanel.add(load);
-		bPanel.add(highscore);
-		bPanel.add(manual);
-		bPanel.add(back);
-		bPanel.add(goToMainScreen);
-		if (UserLoginRegisterMenu.player.getUsername() == null) {
-			user.setVisible(false);
-			load.setVisible(false);
-			back.setVisible(false);
-		} else {
-			goToMainScreen.setVisible(false);
-		}
-		frame.add(bPanel);
+        bPanel.add(user);
+        bPanel.add(difficultyBox);
+        bPanel.add(play);
+        bPanel.add(load);
+        bPanel.add(highscore);
+        bPanel.add(manual);
+        bPanel.add(back);
+        bPanel.add(goToMainScreen);
+        if (UserLoginRegisterMenu.player.getUsername() == null) {
+            user.setVisible(false);
+            load.setVisible(false);
+            back.setVisible(false);
+        } else {
+            goToMainScreen.setVisible(false);
+        }
+        frame.add(bPanel);
 
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.setSize(500, 500);
-	}
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        frame.setSize(500, 500);
+    }
 
-	public void scoreBoard(List<Player> players) {
-		scoreCardFrame = new JFrame();
-		final JButton back = new JButton("Back to Dashboard");
-		List<String> columns = new ArrayList<String>();
-		List<String[]> values = new ArrayList<String[]>();
-		columns.add("User");
-		columns.add("Score");
+    public void scoreBoard(List<Player> players) {
+        scoreCardFrame = new JFrame();
+        final JButton back = new JButton("Back to Dashboard");
+        List<String> columns = new ArrayList<String>();
+        List<String[]> values = new ArrayList<String[]>();
+        columns.add("User");
+        columns.add("Score");
 
-		if (players != null) {
-			Iterator<Player> playerIter = players.iterator();
-			while (playerIter.hasNext()) {
-				Player user = playerIter.next();
-				values.add(new String[] { user.getUsername(), user.getScore() });
-			}
-		}
+        if (players != null) {
+            Iterator<Player> playerIter = players.iterator();
+            while (playerIter.hasNext()) {
+                Player user = playerIter.next();
+                values.add(new String[]{user.getUsername(), user.getScore()});
+            }
+        }
 
-		back.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				scoreCardFrame.dispose();
-				new DashBoardMenu();
-			}
-		});
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scoreCardFrame.dispose();
+                new DashBoardMenu();
+            }
+        });
 
-		TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns.toArray());
-		JTable table = new JTable(tableModel);
+        TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][]{}), columns.toArray());
+        JTable table = new JTable(tableModel);
 
-		scoreCardFrame.setLayout(new BorderLayout());
-		scoreCardFrame.add(new JScrollPane(table), BorderLayout.CENTER);
-		scoreCardFrame.add(table.getTableHeader(), BorderLayout.NORTH);
-		scoreCardFrame.add(back, BorderLayout.SOUTH);
-		scoreCardFrame.setVisible(true);
-		scoreCardFrame.setSize(500, 500);
-	}
+        scoreCardFrame.setLayout(new BorderLayout());
+        scoreCardFrame.add(new JScrollPane(table), BorderLayout.CENTER);
+        scoreCardFrame.add(table.getTableHeader(), BorderLayout.NORTH);
+        scoreCardFrame.add(back, BorderLayout.SOUTH);
+        scoreCardFrame.setVisible(true);
+        scoreCardFrame.setSize(500, 500);
+    }
 }
