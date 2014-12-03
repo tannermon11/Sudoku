@@ -102,8 +102,9 @@ public class PlayMenu extends JFrame {
 						SudokuImporter.grid[x][y] = 0;
 					}
 				}
-				Score.setScoreLabel();
+				Score.setScore();
 				Score.setPlayerScore();
+				Score.setScoreLabel();
 				System.out.println("Score in end listener: " + Score.score);
 				TimeTrack.setTime(0, 0);
 				TimeTrack.timer.stop();
