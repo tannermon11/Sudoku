@@ -4,8 +4,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
@@ -22,13 +23,21 @@ import org.w3c.dom.*;
 public class Player implements Comparator<Player> {
 
 	private static final String USER_FILE = "Users.xml";
-	
-	private String username, password, secretQuestion, securityAnswer, score, completedMode;
-	
+
+	private String username, password, secretQuestion, securityAnswer, score, completedMode, initialScore, sessionScore;
+
 	private SavedGame savedGame;
-	
+
 	private boolean hasSavedGame;
-	
+
+	public String getSessionScore() {
+		return sessionScore;
+	}
+
+	public void setSessionScore(String sessionScore) {
+		this.sessionScore = sessionScore;
+	}
+
 	public String getCompletedMode() {
 		return completedMode;
 	}
@@ -37,7 +46,6 @@ public class Player implements Comparator<Player> {
 		this.completedMode = completedMode;
 	}
 
-	
 	public SavedGame getSavedGame() {
 		return savedGame;
 	}
@@ -261,12 +269,12 @@ public class Player implements Comparator<Player> {
 		return users;
 	}
 
-	public List<Player> getScoreCard() throws SAXException, IOException, ParserConfigurationException {
+	public Map<String, Player> getScoreCard() throws SAXException, IOException, ParserConfigurationException {
 		URL url = getClass().getResource(USER_FILE);
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		Document doc = dbf.newDocumentBuilder().parse(url.getPath());
 		List<Node> users = getUserNode(true, doc);
-		List<Player> players = new ArrayList<Player>();
+		Map<String, Player> players = new HashMap<String, Player>();
 		String username = null;
 		String score = null;
 		for (Node user : users) {
@@ -284,11 +292,31 @@ public class Player implements Comparator<Player> {
 						player.setScore(score);
 					}
 				}
-				players.add(player);
+				players.put(player.getUsername(), player);
 			}
 		}
-		Collections.sort(players, Collections.reverseOrder(new Player()));
 		return players;
+	}
+
+	public String getScoreOfPlayer() throws SAXException, IOException, ParserConfigurationException {
+		URL url = getClass().getResource(USER_FILE);
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		Document doc = dbf.newDocumentBuilder().parse(url.getPath());
+		List<Node> users = getUserNode(true, doc);
+		String score = null;
+		for (Node user : users) {
+			if (user != null) {
+				NodeList children = user.getChildNodes();
+				for (int i = 0; i < children.getLength(); i++) {
+					Node node = children.item(i);
+					if (node.getNodeName().equals("score")) {
+						score = node.getFirstChild().getNodeValue();
+						return score;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	public boolean compareString(String str1, String str2) {
@@ -342,5 +370,13 @@ public class Player implements Comparator<Player> {
 		DOMSource domSource = new DOMSource(doc);
 		StreamResult streamResult = new StreamResult(f);
 		transformer.transform(domSource, streamResult);
+	}
+
+	public String getInitialScore() {
+		return initialScore;
+	}
+
+	public void setInitialScore(String initialScore) {
+		this.initialScore = initialScore;
 	}
 }

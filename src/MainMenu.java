@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -13,7 +14,7 @@ import java.io.IOException;
  * User: Tanner Date: 11/3/2014 Time: 2:02 PM To change this template use File |
  * Settings | File Templates. Update by: Santhosh
  */
-public class UserLoginRegisterMenu extends JFrame {
+public class MainMenu extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	public static JFrame subFrame;
@@ -22,12 +23,16 @@ public class UserLoginRegisterMenu extends JFrame {
 	public static Player player = new Player();
 	public static boolean modeColor = false;
 
-	public UserLoginRegisterMenu() {
+	public MainMenu() {
 		subPanel = new JPanel();
+		subPanel.setLayout(null);
 		subFrame = new JFrame();
 		JButton login = new JButton("Login");
 		JButton register = new JButton("Register");
 		JButton guest = new JButton("Guest");
+		login.setBounds(150, 150, 200, 40); // x,y,width,height
+		register.setBounds(150, 200, 200, 40);
+		guest.setBounds(150, 250, 200, 40);
 		subPanel.add(login);
 		subPanel.add(register);
 		subPanel.add(guest);
@@ -54,7 +59,8 @@ public class UserLoginRegisterMenu extends JFrame {
 		guest.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				UserLoginRegisterMenu.player.setUsername(null);
+				MainMenu.player.setUsername(null);
+				MainMenu.player.setScore("0");
 				subFrame.dispose();
 				new DashBoardMenu();
 				/*
@@ -72,6 +78,7 @@ public class UserLoginRegisterMenu extends JFrame {
 	public void login() {
 		final JFrame login = new JFrame();
 		JPanel loginPanel = new JPanel();
+		loginPanel.setLayout(null);
 		JButton loginButton = new JButton("Login");
 		JButton forgotPwd = new JButton("Forgot Password");
 		JButton goToMainScreen = new JButton("Back to Main Screen");
@@ -88,6 +95,12 @@ public class UserLoginRegisterMenu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				player.setUsername(nameInput.getText());
 				player.setPassword(passwordInput.getText());
+				try {
+					player.setInitialScore(player.getScoreOfPlayer());
+				} catch (SAXException | IOException | ParserConfigurationException e2) {
+					e2.printStackTrace();
+				}
+				Score.score = 0;
 				System.out.println("Username: " + player.getUsername());
 				System.out.println("Password: " + player.getPassword());
 				try {
@@ -96,6 +109,8 @@ public class UserLoginRegisterMenu extends JFrame {
 						login.dispose();
 					} else {
 						loginFailed.setVisible(true);
+						loginFailed.setBounds(100, 200, 350, 40);
+				    	goToMainScreen.setBounds(150, 250, 200, 40);
 					}
 				} catch (SAXException | IOException | ParserConfigurationException e1) {
 					e1.printStackTrace();
@@ -118,10 +133,16 @@ public class UserLoginRegisterMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				login.dispose();
-				new UserLoginRegisterMenu();
+				new MainMenu();
 			}
 		});
-
+		name.setBounds(150, 50, 80, 40);
+		nameInput.setBounds(230, 50, 150, 30);
+    	pass.setBounds(150, 100, 80, 40);
+    	passwordInput.setBounds(230, 100, 150, 30);
+    	loginButton.setBounds(100, 150, 150, 30);
+    	forgotPwd.setBounds(250, 150, 150, 30);
+    	goToMainScreen.setBounds(150, 200, 200, 40);
 		loginPanel.add(name);
 		loginPanel.add(nameInput);
 		loginPanel.add(pass);
@@ -139,11 +160,7 @@ public class UserLoginRegisterMenu extends JFrame {
 
 	public static void profile() {
 		final JFrame profile = new JFrame(player.getUsername() + "'s Profile");
-		JPanel statistics, buttons;
-		JLabel statsLabel = new JLabel("Statistics");
-		JLabel games = new JLabel("Games Completed: ");
-		JLabel highscore = new JLabel("Highest score: ");
-		JLabel bestTime = new JLabel("Best time: ");
+		JPanel buttons;
 		JButton dashboard = new JButton("Go to dashboard");
 		JButton settings = new JButton("Profile settings");
 		JButton logout = new JButton("Log out");
@@ -171,31 +188,25 @@ public class UserLoginRegisterMenu extends JFrame {
 				profile.dispose();
 				try {
 					player.saveScore();
-				} catch (SAXException | IOException | ParserConfigurationException
-						| TransformerException e1) {
+					player.setScore("0");
+					Score.score = 0;
+				} catch (SAXException | IOException | ParserConfigurationException | TransformerException e1) {
 					e1.printStackTrace();
 				}
-				new UserLoginRegisterMenu();
+				new MainMenu();
 			}
 		});
 
-		statistics = new JPanel();
 		buttons = new JPanel();
-		statistics.setLayout(new GridLayout(4, 1));
 		buttons.setLayout(null);
-		dashboard.setBounds(50, 175, 150, 40); // x,y,width,height
-		settings.setBounds(50, 225, 150, 40);
-		logout.setBounds(50, 275, 150, 40);
+		dashboard.setBounds(150, 150, 200, 40); // x,y,width,height
+		settings.setBounds(150, 200, 200, 40);
+		logout.setBounds(150, 250, 200, 40);
 
-		statistics.add(statsLabel);
-		statistics.add(games);
-		statistics.add(highscore);
-		statistics.add(bestTime);
 		buttons.add(dashboard);
 		buttons.add(settings);
 		buttons.add(logout);
 
-		profile.add(statistics);
 		profile.add(buttons);
 		profile.setLayout(new GridLayout(1, 2));
 		profile.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -210,44 +221,38 @@ public class UserLoginRegisterMenu extends JFrame {
 		JButton goToMainScreen = new JButton("Back to Main Screen");
 		JLabel savedSettingMessage = new JLabel("Background color changed");
 		@SuppressWarnings("unchecked")
-		final JComboBox color = new JComboBox(new String[]{"White background / Black lines",
-				"Black background / White lines"});
+		final JComboBox color = new JComboBox(new String[] { "White background / Black lines",
+				"Black background / White lines" });
 
-		color.addActionListener(new ActionListener()
-		{
+		color.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				System.out.println(color.getSelectedItem().toString());
-				if(color.getSelectedItem().toString().equalsIgnoreCase("White background / Black lines"))
+				if (color.getSelectedItem().toString().equalsIgnoreCase("White background / Black lines"))
 					modeColor = false;
-				if(color.getSelectedItem().toString().equalsIgnoreCase("Black background / White lines"))
+				if (color.getSelectedItem().toString().equalsIgnoreCase("Black background / White lines"))
 					modeColor = true;
 			}
 		});
 
-		save.addActionListener(new ActionListener()
-		{
+		save.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{	
+			public void actionPerformed(ActionEvent e) {
 				savedSettingMessage.setVisible(true);
 				Timer t = new Timer(2000, new ActionListener() {
 
-		            @Override
-		            public void actionPerformed(ActionEvent e) {
+					@Override
+					public void actionPerformed(ActionEvent e) {
 						savedSettingMessage.setVisible(false);
-		            }
-		        });
+					}
+				});
 				t.start();
 			}
 		});
-		
-		goToMainScreen.addActionListener(new ActionListener()
-		{
+
+		goToMainScreen.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{	
+			public void actionPerformed(ActionEvent e) {
 				settings.dispose();
 				profile();
 			}
@@ -257,7 +262,7 @@ public class UserLoginRegisterMenu extends JFrame {
 		settingPanel.add(color);
 		settingPanel.add(save);
 		settingPanel.add(savedSettingMessage);
-		settingPanel.add(goToMainScreen);		
+		settingPanel.add(goToMainScreen);
 		savedSettingMessage.setVisible(false);
 		settings.add(settingPanel);
 
@@ -269,6 +274,7 @@ public class UserLoginRegisterMenu extends JFrame {
 	public void register() {
 		final JFrame register = new JFrame();
 		JPanel registerPanel = new JPanel();
+		registerPanel.setLayout(null);
 		JButton registerButton = new JButton("Register");
 		JButton goToMainScreen = new JButton("Back to Main Screen");
 		final JTextField nameInput = new JTextField(7);
@@ -303,10 +309,12 @@ public class UserLoginRegisterMenu extends JFrame {
 						} else {
 							pwdMismatch.setVisible(false);
 							usernameNA.setVisible(true);
+							usernameNA.setBounds(120, 70, 200, 30);
 						}
 					} else {
 						usernameNA.setVisible(false);
 						pwdMismatch.setVisible(true);
+						pwdMismatch.setBounds(120, 180, 200, 30);
 					}
 				} catch (ParserConfigurationException | TransformerException | SAXException | IOException e1) {
 					e1.printStackTrace();
@@ -321,10 +329,22 @@ public class UserLoginRegisterMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				register.dispose();
-				new UserLoginRegisterMenu();
+				new MainMenu();
 			}
 		});
 
+		name.setBounds(120, 50, 80, 30);
+		nameInput.setBounds(230, 50, 150, 30);
+    	pass.setBounds(120, 100, 80, 30);
+    	passwordInput.setBounds(230, 100, 150, 30);
+    	confirm.setBounds(120, 150, 150, 30);
+    	confirmPassword.setBounds(230, 150, 150, 30);
+    	secQ.setBounds(120, 200, 150, 30);
+    	securityQuestions.setBounds(230, 200, 240, 30);
+    	secQA.setBounds(120, 250, 80, 30);
+    	securityAnswer.setBounds(230, 250, 150, 30);
+    	registerButton.setBounds(150, 300, 200, 30);
+    	goToMainScreen.setBounds(150, 350, 200, 30);
 		registerPanel.add(name);
 		registerPanel.add(nameInput);
 		registerPanel.add(pass);
@@ -344,12 +364,13 @@ public class UserLoginRegisterMenu extends JFrame {
 		register.add(registerPanel);
 		register.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		register.setVisible(true);
-		register.setSize(1000, 1000);
+		register.setSize(500, 500);
 	}
 
 	public void forgotPwd() {
 		final JFrame forgot = new JFrame();
 		final JPanel forgotPwdPanel = new JPanel();
+		forgotPwdPanel.setLayout(null);
 		final JButton showPassword = new JButton("Show Password");
 		JButton next = new JButton("Next");
 		JButton goToMainScreen = new JButton("Back to Main Screen");
@@ -359,7 +380,7 @@ public class UserLoginRegisterMenu extends JFrame {
 		final JLabel usernameNA = new JLabel("Sorry! Username not found");
 		final JLabel wrongAnswer = new JLabel("Sorry! Wrong Answer");
 		final JLabel secQLabel = new JLabel();
-		final JLabel pwd = new JLabel("Your password: ");
+		final JLabel pwd = new JLabel("Password: ");
 		final JLabel password = new JLabel();
 
 		next.addActionListener(new ActionListener() {
@@ -370,13 +391,26 @@ public class UserLoginRegisterMenu extends JFrame {
 					if (player.validate(true)) {
 						player = player.getSecurityQA();
 						if (player != null) {
+							usernameNA.setVisible(false);
 							secQLabel.setText(player.getSecretQuestion());
+							secQLabel.setBounds(40, 200, 210, 30); // x,y,width,height
+							secAInput.setBounds(230, 200, 150, 30);
+							showPassword.setBounds(150, 250, 150, 40);
+							goToMainScreen.setBounds(150, 300, 150, 40);
 							secQLabel.setVisible(true);
 							secAInput.setVisible(true);
 							showPassword.setVisible(true);
 						}
 					} else {
 						usernameNA.setVisible(true);
+						pwd.setVisible(false);
+						password.setVisible(false);
+						showPassword.setVisible(false);
+						wrongAnswer.setVisible(false);
+						secAInput.setVisible(false);
+						secQLabel.setVisible(false);
+						usernameNA.setBounds(150, 200, 200, 30); // x,y,width,height
+						goToMainScreen.setBounds(150, 250, 150, 40);
 					}
 				} catch (SAXException | IOException | ParserConfigurationException e1) {
 					e1.printStackTrace();
@@ -388,8 +422,11 @@ public class UserLoginRegisterMenu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(secAInput.getText().equals(player.getSecurityAnswer())) {
+				if (secAInput.getText().equals(player.getSecurityAnswer())) {
 					pwd.setVisible(true);
+					pwd.setBounds(150, 300, 150, 40);
+					password.setBounds(230, 300, 150, 40);
+					goToMainScreen.setBounds(150, 350, 150, 40);
 					wrongAnswer.setVisible(false);
 					password.setText(player.getPassword());
 					password.setVisible(true);
@@ -397,6 +434,8 @@ public class UserLoginRegisterMenu extends JFrame {
 					pwd.setVisible(false);
 					password.setVisible(false);
 					wrongAnswer.setVisible(true);
+					wrongAnswer.setBounds(150, 300, 150, 40);
+					goToMainScreen.setBounds(150, 350, 150, 40);
 				}
 			}
 		});
@@ -406,10 +445,16 @@ public class UserLoginRegisterMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				forgot.dispose();
-				new UserLoginRegisterMenu();
+				new MainMenu();
 			}
 		});
 
+		
+		name.setBounds(150, 100, 150, 30); // x,y,width,height
+		nameInput.setBounds(230, 100, 150, 30);
+		next.setBounds(150, 150, 150, 40);
+		goToMainScreen.setBounds(150, 200, 200, 40);
+		
 		forgotPwdPanel.add(name);
 		forgotPwdPanel.add(nameInput);
 		forgotPwdPanel.add(next);
