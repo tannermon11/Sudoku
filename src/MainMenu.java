@@ -81,7 +81,7 @@ public class MainMenu extends JFrame {
 		loginPanel.setLayout(null);
 		JButton loginButton = new JButton("Login");
 		JButton forgotPwd = new JButton("Forgot Password");
-		JButton goToMainScreen = new JButton("Back to Main Screen");
+		final JButton goToMainScreen = new JButton("Back to Main Screen");
 		final JTextField nameInput = new JTextField(7);
 		final JPasswordField passwordInput = new JPasswordField(7);
 		JLabel name = new JLabel("Username: ");
@@ -219,7 +219,7 @@ public class MainMenu extends JFrame {
 		JPanel settingPanel = new JPanel();
 		JButton save = new JButton("Save settings");
 		JButton goToMainScreen = new JButton("Back to Main Screen");
-		JLabel savedSettingMessage = new JLabel("Background color changed");
+		final JLabel savedSettingMessage = new JLabel("Background color changed");
 		@SuppressWarnings("unchecked")
 		final JComboBox color = new JComboBox(new String[] { "White background / Black lines",
 				"Black background / White lines" });
@@ -373,7 +373,7 @@ public class MainMenu extends JFrame {
 		forgotPwdPanel.setLayout(null);
 		final JButton showPassword = new JButton("Show Password");
 		JButton next = new JButton("Next");
-		JButton goToMainScreen = new JButton("Back to Main Screen");
+		final JButton goToMainScreen = new JButton("Back to Main Screen");
 		final JTextField nameInput = new JTextField(7);
 		final JTextField secAInput = new JTextField(15);
 		JLabel name = new JLabel("Username: ");
