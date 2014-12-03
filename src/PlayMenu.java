@@ -71,7 +71,6 @@ public class PlayMenu extends JFrame {
 		bPanel.add(hints);
 		bPanel.add(pause);
 		bPanel.add(end);
-		bPanel.add(save);
 		bPanel.add(notes);
 
 		pause.addActionListener(new ActionListener() {
@@ -218,6 +217,10 @@ public class PlayMenu extends JFrame {
 				aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white));
 			else
 				aPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
+		}
+		
+		if(MainMenu.player.getUsername()!=null) {
+			bPanel.add(save);
 		}
 
 		frame.setVisible(true);
