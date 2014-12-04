@@ -28,7 +28,7 @@ public class HighScoreMenu extends JFrame {
 		List<String[]> values = new ArrayList<String[]>();
 		columns.add("User");
 		columns.add("Score");
-		int totalScore = 0;
+		int totalScore;
 
 		Map<String, Player> playersMap = MainMenu.player.getScoreCard();
 

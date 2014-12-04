@@ -189,6 +189,7 @@ public class MainMenu extends JFrame {
 				try {
 					player.saveScore();
 					player.setScore("0");
+					player.setSessionScore("0");
 					Score.score = 0;
 				} catch (SAXException | IOException | ParserConfigurationException | TransformerException e1) {
 					e1.printStackTrace();

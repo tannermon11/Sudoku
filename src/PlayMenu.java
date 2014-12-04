@@ -105,7 +105,7 @@ public class PlayMenu extends JFrame {
 				Score.setScore();
 				Score.setPlayerScore();
 				Score.setScoreLabel();
-				System.out.println("Score in end listener: " + Score.score);
+				System.out.println("Score in end listener: " + Score.score+"::" + MainMenu.player.getSessionScore());
 				TimeTrack.setTime(0, 0);
 				TimeTrack.timer.stop();
 				displaySolution();

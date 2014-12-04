@@ -328,14 +328,20 @@ public class Player implements Comparator<Player> {
 
 	@Override
 	public int compare(Player player1, Player player2) {
-		int score1 = Integer.parseInt(player1.getScore());
-		int score2 = Integer.parseInt(player2.getScore());
-		if (score1 > score2) {
-			return 1;
-		} else if (score1 == score2) {
-			return 0;
+		int score1 = 0; int score2 = 0;
+		if(player1 != null && player1.getScore() != null) {
+			score1 = Integer.parseInt(player1.getScore());
 		}
-		return -1;
+		if(player2 != null && player2.getScore() != null) {
+			score2 = Integer.parseInt(player2.getScore());
+		}
+
+			if (score1 > score2) {
+				return 1;
+			} else if (score1 == score2) {
+				return 0;
+			}
+			return -1;
 	}
 
 	public void saveScore() throws SAXException, IOException, ParserConfigurationException, TransformerException {
@@ -353,8 +359,8 @@ public class Player implements Comparator<Player> {
 				if (node.getNodeName().equals("score")) {
 					String earlierScore = node.getFirstChild().getTextContent();
 					int early = Integer.parseInt(earlierScore);
-					if (this.getScore() != null) {
-						int current = Integer.parseInt(this.getScore());
+					if (this.getSessionScore() != null) {
+						int current = Integer.parseInt(this.getSessionScore());
 						int totalScore = current + early;
 						node.getFirstChild().setTextContent(totalScore + "");
 						node.getFirstChild().setNodeValue(totalScore + "");
