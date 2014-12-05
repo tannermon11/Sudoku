@@ -1,8 +1,7 @@
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 /**
@@ -18,18 +17,18 @@ public class SudokuImporter {
     Random rand = new Random();
 
     public SudokuImporter(boolean load) {
-        File[] puzzles = new File[4];
-        File[] solutions = new File[4];
+    	InputStream[] puzzles = new InputStream[4];
+    	InputStream[] solutions = new InputStream[4];
         String[] txtFiles = {"easy.txt", "medium.txt", "hard.txt", "evil.txt"};
         String[] solutionTxtFiles = {"easySol.txt", "mediumSol.txt", "hardSol.txt", "evilSol.txt"};
-        URL url;
+        InputStream url;
         for (int i = 0; i < puzzles.length; i++) {
-            url = getClass().getResource(txtFiles[i]);
+            url = this.getClass().getClassLoader().getResourceAsStream(txtFiles[i]);
             if (url != null)
-                puzzles[i] = new File(url.getPath());
-            url = getClass().getResource(solutionTxtFiles[i]);
+                puzzles[i] = url;
+            url = this.getClass().getClassLoader().getResourceAsStream(solutionTxtFiles[i]);
             if (url != null)
-                solutions[i] = new File(url.getPath());
+                solutions[i] = url;
         }
         puzzleNum = rand.nextInt(3);
         int difficulty = 0;
@@ -46,7 +45,7 @@ public class SudokuImporter {
             difficulty = 3;
 
         try {
-            reader = new BufferedReader(new FileReader(puzzles[difficulty]));
+            reader = new BufferedReader(new InputStreamReader(puzzles[difficulty], "UTF-8"));
             String line;
             if (load)
             while ((line = reader.readLine()) != null) {
@@ -71,7 +70,7 @@ public class SudokuImporter {
                     }
                 }
             }
-            reader = new BufferedReader(new FileReader(solutions[difficulty]));
+            reader = new BufferedReader(new InputStreamReader(solutions[difficulty], "UTF-8"));
             count = 0;
             if (load)
             while ((line = reader.readLine()) != null) {

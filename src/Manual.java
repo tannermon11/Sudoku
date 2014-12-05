@@ -2,9 +2,9 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,8 +21,7 @@ public class Manual extends JFrame {
 	
 	
 	public Manual() {
-		File manualFile = new File("Manual.txt");
-	    FileReader fr = null;
+		InputStream url = this.getClass().getClassLoader().getResourceAsStream("Manual.txt");
 	    BufferedReader reader = null;
 		 mFrame = new JFrame();
          mTextArea = new JTextArea();
@@ -32,8 +31,7 @@ public class Manual extends JFrame {
 			scrollPane.setViewportView(mTextArea);
 
          try {
-             fr = new FileReader(manualFile);
-             reader = new BufferedReader(fr);
+             reader = new BufferedReader(new InputStreamReader(url, "UTF-8"));
              mTextArea.read(reader, "mTextArea");
              reader.close();
              mTextArea.requestFocus();

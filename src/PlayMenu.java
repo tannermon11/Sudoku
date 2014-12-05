@@ -121,7 +121,12 @@ public class PlayMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TimeTrack.timer.stop();
-				LoadSave.save();
+				LoadSave save = new LoadSave();
+				try {
+					save.save();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 

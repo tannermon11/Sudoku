@@ -1,19 +1,29 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 public class LoadSave {
 
-	public static void load() {
+	public void load() throws UnsupportedEncodingException, FileNotFoundException {
 		PlayMenu.Accuracy = 0;
 		int min = 0, sec = 0, score = 0;
 		BufferedReader br = null;
-		File file = new File(MainMenu.player.getUsername() + ".txt");
+		String path = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+		String decodedPath = URLDecoder.decode(path, "UTF-8");
+		InputStream url = new FileInputStream(new File(decodedPath + "\\" + MainMenu.player.getUsername() + ".txt"));
 		try {
-			br = new BufferedReader(new FileReader(file));
+			br = new BufferedReader(new InputStreamReader(url, "UTF-8"));
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] test = line.split(",");
@@ -49,12 +59,23 @@ public class LoadSave {
 		Score.score = score;
 	}
 
-	public static void save() {
+	public OutputStream copyStream(InputStream input, OutputStream output) throws IOException {
+		byte[] buffer = new byte[1024]; // Adjust if you want
+		int bytesRead;
+		while ((bytesRead = input.read(buffer)) != -1) {
+			output.write(buffer, 0, bytesRead);
+		}
+		return output;
+	}
 
-		File file = new File(MainMenu.player.getUsername() + ".txt");
+	public void save() throws IOException {
+
 		BufferedWriter bw = null;
+		String path = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+		String decodedPath = URLDecoder.decode(path, "UTF-8");
+		FileWriter fw = new FileWriter(decodedPath + "\\" + MainMenu.player.getUsername() + ".txt");
 		try {
-			bw = new BufferedWriter(new FileWriter(file));
+			bw = new BufferedWriter(fw);
 			bw.write("Time: " + TimeTrack.minutes_elapsed + " " + TimeTrack.seconds_elapsed + "\n");
 			Score.setScore();
 			bw.write("Score: " + Score.score + "\n");

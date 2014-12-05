@@ -5,7 +5,9 @@ import org.xml.sax.SAXException;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * User: Tanner Date: 10/30/2014 Time: 9:42 PM To change this template use File
@@ -65,7 +67,14 @@ public class DashBoardMenu extends JFrame {
         load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoadSave.load();
+            	LoadSave load = new LoadSave();
+                try {
+					load.load();
+				} catch (UnsupportedEncodingException e1) {
+					e1.printStackTrace();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
             }
         });
 
